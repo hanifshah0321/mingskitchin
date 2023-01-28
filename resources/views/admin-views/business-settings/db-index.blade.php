@@ -106,8 +106,8 @@
                 showCancelButton: true,
                 cancelButtonColor: 'default',
                 confirmButtonColor: '#FC6A57',
-                cancelButtonText: '{{translate('No?')}}',
-                confirmButtonText:'{{translate('Yes?')}}',
+                cancelButtonText: 'No',
+                confirmButtonText: 'Yes',
                 reverseButtons: true
             }).then((result) => {
                 if (result.value) {

@@ -1,17 +1,7 @@
 @extends('layouts.admin.app')
 
 @section('title', translate('Add new delivery-man'))
-<style>
-    .password-container{
-        position: relative;
-    }
 
-    .togglePassword{
-        position: absolute;
-        top: 14px;
-        right: 16px;
-    }
-</style>
 @push('css_or_js')
 
 @endpush
@@ -19,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i class="tio-add-circle-outlined"></i> {{translate('add')}} {{translate('new')}} {{translate('deliveryman')}}</h1>
+                    <h1 class="page-header-title"><i class="tio-add-circle-outlined"></i> {{translate('add')}} {{translate('new')}} {{translate('deliveryman')}}</h1>
                 </div>
             </div>
         </div>
@@ -52,14 +42,14 @@
                         <div class="col-md-4 col-12">
                             <div class="form-group">
                                 <label class="input-label" for="exampleFormControlInput1">{{translate('email')}}</label>
-                                <input type="email" name="email" class="form-control" placeholder="{{translate('email')}}"
+                                <input type="email" name="email" class="form-control" placeholder="{{translate('Ex : ex@example.com')}}"
                                        required>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-group">
                                 <label class="input-label" for="exampleFormControlInput1">{{translate('phone')}}</label>
-                                <input type="text" name="phone" class="form-control" placeholder="{{translate('phone')}}"
+                                <input type="text" name="phone" class="form-control" placeholder="{{translate('Ex : 017********')}}"
                                        required>
                             </div>
                         </div>
@@ -108,11 +98,8 @@
 
                     <div class="form-group">
                         <label class="input-label" for="exampleFormControlInput1">{{translate('password')}}</label>
-                        <div class="password-container">
-                            <input type="password" name="password" class="form-control pr-7" id="password"
-                                   placeholder="{{translate('Password')}}" required>
-                            <i  class="tio-hidden-outlined togglePassword"></i>
-                        </div>
+                        <input type="text" name="password" class="form-control" placeholder="{{translate('Ex : password')}}"
+                               required>
                     </div>
 
                     <div class="form-group">
@@ -192,14 +179,6 @@
                     });
                 }
             });
-        });
-
-        $('.togglePassword').on('click', function (e) {
-            console.log("fired")
-            const password = $(this).siblings('input');
-            password.attr('type') === 'password' ? $(this).addClass('tio-visible-outlined').removeClass('tio-hidden-outlined') :$(this).addClass('tio-hidden-outlined').removeClass('tio-visible-outlined');
-            const type = password.attr('type') === 'password' ? 'text' : 'password';
-            password.attr('type', type);
         });
     </script>
 @endpush

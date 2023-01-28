@@ -11,6 +11,13 @@
 
             .printable {
                 display: block;
+                font-family: emoji !important;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact !important; /* Chrome, Safari */
+                color-adjust: exact !important;
+                font-family: emoji !important;
             }
         }
 
@@ -24,7 +31,8 @@
             overflow: visible;
             padding: 0;
             border: none;
-            border-top: medium double #000000;
+            border-top: medium double #333;
+            color: #333;
             text-align: center;
         }
     </style>
@@ -32,7 +40,8 @@
     <style type="text/css" media="print">
         @page {
             size: auto;   /* auto is the initial value */
-            margin: 2px;
+            margin: 2px;  /* this affects the margin in the printer settings */
+            /*font-family: emoji !important;*/
         }
 
     </style>
@@ -50,7 +59,7 @@
                 </center>
                 <hr class="non-printable">
             </div>
-            <div class="col-5" id="printableAreaContent">
+            <div class="col-5">
                 <div class="text-center pt-4 mb-3">
                     <h2 style="line-height: 1">{{\App\Model\BusinessSetting::where(['key'=>'restaurant_name'])->first()->value}}</h2>
                     <h5 style="font-size: 20px;font-weight: lighter;line-height: 1">
@@ -90,12 +99,12 @@
                 </div>
                 <h5 class="text-uppercase"></h5>
                 <hr class="text-dark hr-style-2">
-                <table class="table table-bordered mt-3">
+                <table class="table table-bordered mt-3" style="width: 98%;color: black!important;">
                     <thead>
                     <tr>
                         <th style="width: 10%">{{translate('QTY')}}</th>
                         <th class="">{{translate('DESC')}}</th>
-                        <th style="text-align:right; padding-right:4px">{{translate('Price')}}</th>
+                        <th class="">{{translate('Price')}}</th>
                     </tr>
                     </thead>
 
@@ -145,7 +154,7 @@
                                     {{translate('Discount')}}
                                     : {{ \App\CentralLogics\Helpers::set_symbol($detail['discount_on_product']) }}
                                 </td>
-                                <td style="width: 28%;padding-right:4px; text-align:right">
+                                <td style="width: 28%">
                                     @php($amount=($detail['price']-$detail['discount_on_product'])*$detail['quantity'])
                                     {{ \App\CentralLogics\Helpers::set_symbol($amount) }}
                                 </td>
@@ -157,7 +166,7 @@
                     </tbody>
                 </table>
 
-                <div class="row justify-content-md-end mb-3" style="width: 99%">
+                <div class="row justify-content-md-end mb-3" style="width: 97%">
                     <div class="col-md-7 col-lg-7">
                         <dl class="row text-right" style="color: black!important;">
                             <dt class="col-6">{{translate('Items Price')}}:</dt>

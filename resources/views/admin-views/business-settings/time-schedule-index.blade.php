@@ -159,7 +159,7 @@
                         success: function (data) {
                             if (data.errors) {
                                 for (var i = 0; i < data.errors.length; i++) {
-                                    toastr.error('test', {
+                                    toastr.error(data.errors[i].message, {
                                         CloseButton: true,
                                         ProgressBar: true
                                     });

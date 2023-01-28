@@ -12,13 +12,15 @@ use App\Model\Order;
 use App\Model\OrderDetail;
 use App\Model\Product;
 use App\Model\Review;
-use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use function App\CentralLogics\translate;
+use Auth;
+
+use App\Membership;
+use App\UserMembership;
 
 class OrderController extends Controller
 {
@@ -86,9 +88,6 @@ class OrderController extends Controller
                 'delivery_charge' => Helpers::get_delivery_charge($request['distance']),
                 'preparation_time' => Helpers::get_business_settings('default_preparation_time') ?? 0,
 
-//                'table_id' => $request['table_id'],
-//                'number_of_people' => $request['number_of_people'],
-
                 'created_at' => now(),
                 'updated_at' => now()
             ];
@@ -97,10 +96,32 @@ class OrderController extends Controller
 
             foreach ($request['cart'] as $c) {
                 $product = Product::find($c['product_id']);
+                $usermem = UserMembership::where('user_id', $request->user()->id)->first();
+                $plandiscount;
+                if (!empty($usermem) && $usermem != null) {
+                    
+                    $pack = Membership::where('id', $usermem->membership_id)->first();
+                    $plandiscount= $pack->discount;
+
+                    
+                }
                 if (array_key_exists('variation', $c) && count(json_decode($product['variations'], true)) > 0) {
                     $price = Helpers::variation_price($product, json_encode($c['variation']));
+                    if (!empty($plandiscount)) {
+                        $ninuvalue = $price / 100;
+                        $discountamount = $ninuvalue * $plandiscount;
+                        $price = $price - $discountamount;
+                    }
+                    
+
                 } else {
                     $price = Helpers::set_price($product['price']);
+                    if (!empty($plandiscount)) {
+                        $ninuvalue = $price / 100;
+                        $discountamount = $ninuvalue * $plandiscount;
+                        $price = $price - $discountamount;
+                    }
+                    
                 }
                 $or_d = [
                     'order_id' => $o_id,
@@ -150,22 +171,6 @@ class OrderController extends Controller
 
             }
 
-            if($or['order_status'] == 'confirmed') {
-                $data = [
-                    'title' => translate('You have a new order - (Order Confirmed).'),
-                    'description' => $o_id,
-                    'order_id' => $o_id,
-                    'image' => '',
-                ];
-
-                try {
-                    Helpers::send_push_notif_to_topic($data, "kitchen-{$or['branch_id']}",'general');
-
-                } catch (\Exception $e) {
-                    Toastr::warning(translate('Push notification failed!'));
-                }
-            }
-
             return response()->json([
                 'message' => translate('order_success'),
                 'order_id' => $o_id
@@ -184,21 +189,6 @@ class OrderController extends Controller
 
         $orders->map(function ($data) {
             $data['deliveryman_review_count'] = DMReview::where(['delivery_man_id' => $data['delivery_man_id'], 'order_id' => $data['id']])->count();
-
-            //is product available
-            $order_id = $data->id;
-            $order_details = OrderDetail::where('order_id', $order_id)->first();
-            $product_id = null;
-            $product = null;
-            if(isset($order_details))
-                $product_id = $order_details->product_id;
-
-            if(isset($product_id))
-                $product = Product::find($product_id);
-
-            $data['is_product_available'] = isset($product) ? 1 : 0;
-
-
             return $data;
         });
 
@@ -218,17 +208,41 @@ class OrderController extends Controller
             return response()->json(['errors' => Helpers::error_processor($validator)], 403);
         }
 
-        $details = OrderDetail::with(['order'])->withCount(['reviews'])->where(['order_id' => $request['order_id']])->get();
-        if ($details->count() < 1) {
+        $details = OrderDetail::with('order')->where(['order_id' => $request['order_id']])->get();
+
+        if ($details->count() > 0) {
+            foreach ($details as $det) {
+                $det['add_on_ids'] = json_decode($det['add_on_ids']);
+                $det['add_on_qtys'] = json_decode($det['add_on_qtys']);
+
+                $det['variation'] = json_decode($det['variation'], true);
+                if ($det->order->order_type == 'pos') {
+                    if(isset($det['variation'][0])) {
+                        $det['variation'] = implode('-', array_values($det['variation'][0])) ?? null;
+                    } else {
+                        $det['variation'] = implode('-', array_values($det['variation'])) ?? null;
+                    }
+                }
+                else {
+                    if (isset($det['variation'][0])) {
+                        $det['variation'] = !empty($det['variation'][0]) ? (string)$det['variation'][0]['type'] : null;
+                    } else {
+                        $det['variation'] = !empty($det['variation']) ? (string)$det['variation']['type'] : null;
+                    }
+                }
+
+                $det['review_count'] = Review::where(['order_id' => $det['order_id'], 'product_id' => $det['product_id']])->count();
+                $product = Product::where('id', $det['product_id'])->first();
+                $det['product_details'] = isset($product) ? Helpers::product_data_formatting($product) : '';
+            }
+            return response()->json($details, 200);
+        } else {
             return response()->json([
                 'errors' => [
                     ['code' => 'order', 'message' => translate('not found!')]
                 ]
-            ], 404);
+            ], 401);
         }
-
-        $details = Helpers::order_details_formatter($details);
-        return response()->json($details, 200);
     }
 
     public function cancel_order(Request $request)
@@ -259,5 +273,68 @@ class OrderController extends Controller
                 ['code' => 'order', 'message' => translate('no_data_found')]
             ]
         ], 401);
+    }
+    
+
+
+     public function buyplan(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'amount' => 'required',
+            'membership_id' => 'required',
+        
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+        }
+
+        $userid = $request->user_id;
+        $amount = $request->amount;
+        $membership_id = $request->membership_id;
+
+        $usermembership =    new   UserMembership();
+        $usermembership->user_id = $userid;
+        $usermembership->membership_id  = $membership_id;
+        $usermembership->buy_at = "2022-08-21";
+        $usermembership->expire_at = "2022-12-01";
+        $usermembership->pay_status = 1;
+        $usermembership->save();
+
+        return redirect(route('planpayWithpaypal',[$userid, $amount, $membership_id]));
+    }
+    
+    
+       public function checkmembership(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+        
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+        }
+
+        $plan = UserMembership::with('usermembershipplan')->where('user_id', $request->user_id)->first();
+
+        // if (!empty($plan->usermembershipplan->discount) && $plan->usermembershipplan->discount != null) {
+
+        //     $plan =$plan->usermembershipplan->discount;
+        // }else{
+        //     $plan = null;
+        // }
+        
+        return response()->json($plan, 200);
+    
+    }
+    
+    public function loginuserid(Request $request){
+        
+         $user = auth()->user()->id;
+         return response()->json($user, 200);
+         
     }
 }

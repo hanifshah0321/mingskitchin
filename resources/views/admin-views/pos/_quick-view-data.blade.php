@@ -75,15 +75,9 @@
 
             @if($product->discount > 0)
                 <div class="mb-3 text-dark">
-                    <strong>{{translate('Discount : ')}}</strong>
+                    <strong>Discount : </strong>
                     <strong
                         id="set-discount-amount">{{ \App\CentralLogics\Helpers::set_symbol(\App\CentralLogics\Helpers::discount_calculate($product, $product->price)) }}</strong>
-                </div>
-            @endif
-            @if($product->product_type != null)
-                <div class="mb-3 text-dark">
-                    <strong>{{translate('Product Type : ')}}</strong>
-                    <strong>{{ $product->product_type == 'veg' ? 'Veg' : 'Non Veg'}}</strong>
                 </div>
             @endif
         <!-- Product panels-->

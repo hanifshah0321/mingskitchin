@@ -12,9 +12,10 @@
 @endpush
 
 @section('content')
+
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
                     <nav aria-label="breadcrumb">
@@ -27,7 +28,7 @@
                         </ol>
                     </nav>
 
-                    <h1 class="">{{translate('conversation list')}}</h1>
+                    <h1 class="page-header-title">{{translate('conversation list')}}</h1>
                 </div>
 
                 <div class="col-sm-auto">
@@ -40,7 +41,7 @@
         <div class="row">
             <div class="col-lg-4 col-4">
                 <div class="input-group-overlay input-group-sm mb-1">
-                    <input style="background: aliceblue; border-radius: 15px" placeholder="{{translate('Search user')}}"
+                    <input style="background: aliceblue; border-radius: 15px" placeholder="Search user"
                            class="cz-filter-search form-control form-control-sm appended-form-control"
                            type="text" id="search-conversation-user" autocomplete="off">
                 </div>
@@ -56,8 +57,6 @@
                                 @php(array_push($array,$conv->user_id))
                                 @php($user=\App\User::find($conv->user_id))
                                 @php($unchecked=\App\Model\Conversation::where(['user_id'=>$conv->user_id,'checked'=>0])->count())
-
-                                @if(isset($user))
                                 <div
                                     class="sidebar_primary_div d-flex border-bottom pb-2 pt-2 pl-md-1 pl-0 justify-content-between align-items-center customer-list {{$unchecked!=0?'conv-active':''}}"
                                     onclick="viewConvs('{{route('admin.message.view',[$conv->user_id])}}','customer-{{$conv->user_id}}')"
@@ -74,7 +73,6 @@
                                         <span class="{{$unchecked!=0?'badge badge-info':''}}" id="counter-{{$conv->user_id}}">{{$unchecked!=0?$unchecked:''}}</span>
                                     </h5>
                                 </div>
-                                @endif
                             @endif
                         @endforeach
                     </div>

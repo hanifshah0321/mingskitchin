@@ -45,7 +45,7 @@
                                                 <label for="inputPassword2"
                                                        class="sr-only">{{translate('mail')}}</label>
                                                 <input type="email" id="test-email" class="form-control"
-                                                       placeholder="{{translate('Ex : jhon@email.com')}}">
+                                                       placeholder="Ex : jhon@email.com">
                                             </div>
                                         </div>
                                         <div class="col-4">
@@ -153,8 +153,7 @@
                     showCancelButton: true,
                     confirmButtonColor: '#F56A57',
                     cancelButtonColor: 'secondary',
-                    confirmButtonText: '{{translate('Yes')}}!',
-                    cancelButtonText: '{{translate('Cancel')}}!',
+                    confirmButtonText: '{{translate('Yes')}}!'
                 }).then((result) => {
                     if (result.value) {
                         $.ajaxSetup({

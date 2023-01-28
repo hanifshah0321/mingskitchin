@@ -7,7 +7,6 @@ use App\Model\Admin;
 use App\Model\AdminRole;
 use App\Model\BusinessSetting;
 use App\Model\Order;
-use App\Model\OrderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +24,7 @@ class UpdateController extends Controller
         Helpers::setEnvironmentValue('BUYER_USERNAME', $request['username']);
         Helpers::setEnvironmentValue('PURCHASE_CODE', $request['purchase_key']);
         Helpers::setEnvironmentValue('APP_MODE', 'live');
-        Helpers::setEnvironmentValue('SOFTWARE_VERSION', '9.0');
+        Helpers::setEnvironmentValue('SOFTWARE_VERSION', '8.0');
         Helpers::setEnvironmentValue('APP_NAME', 'efood');
 
         $data = Helpers::requestSender($request);
@@ -275,48 +274,6 @@ class UpdateController extends Controller
                 "password" => $mail_config['password']
             ]),
         ]);
-
-        //*** auto run script ***
-        try {
-            $order_details = OrderDetail::get();
-            foreach($order_details as $order_detail) {
-
-                //*** addon quantity integer casting script ***
-                $qtys = json_decode($order_detail['add_on_qtys'], true);
-                array_walk($qtys, function (&$add_on_qtys) {
-                    $add_on_qtys = (int) $add_on_qtys;
-                });
-                $order_detail['add_on_qtys'] = json_encode($qtys);
-                //*** end ***
-
-
-                //*** variation(POS) structure change script ***
-                $variation = json_decode($order_detail['variation'], true);
-                $product = json_decode($order_detail['product_details'], true);
-
-                if(count($variation) > 0) {
-                    $result = [];
-                    if(!array_key_exists('price', $variation[0])) {
-                        $result[] = [
-                            'type' => $variation[0]['Size'],
-                            'price' => Helpers::set_price($product['price'])
-                        ];
-                    }
-                    if(count($result) > 0) {
-                        $order_detail['variation'] = json_encode($result);
-                    }
-
-                }
-                //*** end ***
-
-                $order_detail->save();
-
-
-            }
-        } catch (\Exception $exception) {
-            //
-        }
-        //*** end ***
 
         DB::table('branches')->insertOrIgnore([
             'id' => 1,

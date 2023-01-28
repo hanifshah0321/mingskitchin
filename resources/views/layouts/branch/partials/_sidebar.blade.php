@@ -33,7 +33,7 @@
                         <!-- Dashboards -->
                         <li class="navbar-vertical-aside-has-menu {{Request::is('branch')?'show':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
-                               href="{{route('branch.dashboard')}}" title="{{translate('Dashboards')}}">
+                               href="{{route('branch.dashboard')}}" title="Dashboards">
                                 <i class="tio-home-vs-1-outlined nav-icon"></i>
                                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
                                     {{translate('dashboard')}}
@@ -48,12 +48,11 @@
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
 
-                        <!-- POS -->
+                    <!-- POS -->
                         <li class="navbar-vertical-aside-has-menu {{Request::is('branch/pos/*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
                                 <i class="tio-shopping nav-icon"></i>
-                                <span
-                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('POS')}}</span>
+                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('POS')}}</span>
                             </a>
                             <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
                                 style="display: {{Request::is('branch/pos/*')?'block':'none'}}">
@@ -66,12 +65,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item {{Request::is('branch/pos/orders')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.pos.orders')}}"
-                                       title="{{translate('orders')}}">
+                                    <a class="nav-link " href="{{route('branch.pos.orders')}}" title="{{translate('orders')}}">
                                         <span class="tio-circle nav-indicator-icon"></span>
                                         <span class="text-truncate">{{translate('orders')}}
                                         <span class="badge badge-info badge-pill ml-1">
-                                            {{\App\Model\Order::where('branch_id', auth('branch')->id())->pos()->count()}}
+                                            {{\App\Model\Order::where('branch_id', auth('branch')->id())->Pos()->count()}}
                                         </span>
                                     </span>
                                     </a>
@@ -81,29 +79,28 @@
                         <!-- End POS -->
 
                         <li class="nav-item">
-                            <small class="nav-subtitle"
-                                   title="{{translate('Pages')}}">{{translate('order')}} {{translate('section')}}</small>
+                            <small class="nav-subtitle" title="Pages">{{translate('order')}} {{translate('section')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
 
                         <!-- Pages -->
                         <li class="navbar-vertical-aside-has-menu {{Request::is('branch/orders*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
-                               title="{{translate('order')}}">
+                               title="Pages">
                                 <i class="tio-shopping-cart nav-icon"></i>
                                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{translate('online')}} {{translate('order')}}
+                                    {{translate('order')}}
                                 </span>
                             </a>
                             <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                style="display: {{Request::is('branch/orders*')?'block':'none'}}">
+                                style="display: {{Request::is('branch*')?'block':'none'}}">
                                 <li class="nav-item {{Request::is('branch/orders/list/all')?'active':''}}">
                                     <a class="nav-link" href="{{route('branch.orders.list',['all'])}}" title="">
                                         <span class="tio-circle nav-indicator-icon"></span>
                                         <span class="text-truncate">
                                             {{translate('all')}}
                                             <span class="badge badge-info badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->notDineIn()->where(['branch_id'=>auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->where(['branch_id'=>auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
                                     </a>
@@ -114,7 +111,7 @@
                                         <span class="text-truncate">
                                             {{translate('pending')}}
                                             <span class="badge badge-soft-info badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->notSchedule()->notDineIn()->where(['order_status'=>'pending','branch_id'=>auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'pending','branch_id'=>auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
                                     </a>
@@ -125,7 +122,7 @@
                                         <span class="text-truncate">
                                             {{translate('confirmed')}}
                                                 <span class="badge badge-soft-success badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->notSchedule()->notDineIn()->where(['order_status'=>'confirmed','branch_id'=>auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'confirmed','branch_id'=>auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
                                     </a>
@@ -136,31 +133,9 @@
                                         <span class="text-truncate">
                                             {{translate('processing')}}
                                                 <span class="badge badge-warning badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->notSchedule()->notDineIn()->where(['order_status'=>'processing','branch_id'=>auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'processing','branch_id'=>auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('branch/orders/list/cooking')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.orders.list',['cooking'])}}" title="">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">
-                                                {{translate('cooking')}}
-                                                    <span class="badge badge-warning badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->notDineIn()->where(['order_status'=>'cooking'])->where(['order_status'=>'cooking','branch_id'=>auth('branch')->id()])->notSchedule()->count()}}
-                                                </span>
-                                            </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('branch/orders/list/done')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.orders.list',['done'])}}" title="">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">
-                                                {{translate('done')}}
-                                                    <span class="badge badge-warning badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->notDineIn()->where(['order_status'=>'done'])->where(['order_status'=>'done','branch_id'=>auth('branch')->id()])->notSchedule()->count()}}
-                                                </span>
-                                            </span>
                                     </a>
                                 </li>
                                 <li class="nav-item {{Request::is('branch/orders/list/out_for_delivery')?'active':''}}">
@@ -170,7 +145,7 @@
                                         <span class="text-truncate">
                                             {{translate('out_for_delivery')}}
                                                 <span class="badge badge-warning badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->notSchedule()->notDineIn()->where(['order_status'=>'out_for_delivery','branch_id'=>auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'out_for_delivery','branch_id'=>auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
                                     </a>
@@ -181,7 +156,7 @@
                                         <span class="text-truncate">
                                             {{translate('delivered')}}
                                                 <span class="badge badge-success badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->notSchedule()->notDineIn()->where(['order_status'=>'delivered','branch_id'=>auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'delivered','branch_id'=>auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
                                     </a>
@@ -192,7 +167,7 @@
                                         <span class="text-truncate">
                                             {{translate('returned')}}
                                                 <span class="badge badge-soft-danger badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->notSchedule()->notDineIn()->where(['order_status'=>'returned','branch_id'=>auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'returned','branch_id'=>auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
                                     </a>
@@ -203,7 +178,7 @@
                                         <span class="text-truncate">
                                             {{translate('failed')}}
                                             <span class="badge badge-danger badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->notSchedule()->notDineIn()->where(['order_status'=>'failed','branch_id'=>auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'failed','branch_id'=>auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
                                     </a>
@@ -215,7 +190,7 @@
                                         <span class="text-truncate">
                                             {{translate('canceled')}}
                                                 <span class="badge badge-soft-dark badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->notSchedule()->notDineIn()->where(['order_status'=>'canceled','branch_id'=>auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'canceled','branch_id'=>auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
                                     </a>
@@ -227,180 +202,14 @@
                                         <span class="text-truncate">
                                             {{translate('scheduled')}}
                                                 <span class="badge badge-soft-info badge-pill ml-1">
-                                                {{\App\Model\Order::notPos()->schedule()->notDineIn()->where(['branch_id' => auth('branch')->id()])->count()}}
+                                                {{\App\Model\Order::notPos()->schedule()->where(['branch_id' => auth('branch')->id()])->count()}}
                                             </span>
                                         </span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-
-                        <li class="nav-item">
-                            <small
-                                class="nav-subtitle">{{translate('table')}} {{translate('order')}} {{translate('section')}}</small>
-                            <small class="tio-more-horizontal nav-subtitle-replacer"></small>
-                        </li>
-
-                        <li class="navbar-vertical-aside-has-menu {{Request::is('branch/table/order/list/*')?'active':''}}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
-                                <i class="tio-shopping-cart nav-icon"></i>
-                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{translate('table order')}}
-                                </span>
-                                <label class="badge badge-danger">{{translate('addon')}}</label>
-                            </a>
-                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                style="display: {{Request::is('branch/table/order*')?'block':'none'}}">
-                                <li class="nav-item {{Request::is('branch/table/order/list/all')?'active':''}}">
-                                    <a class="nav-link" href="{{route('branch.table.order.list',['all'])}}" title="">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">
-                                                {{translate('all')}}
-                                                <span class="badge badge-success badge-pill ml-1">
-                                                    {{\App\Model\Order::dineIn()->where(['branch_id' => auth('branch')->id()])->count()}}
-                                                </span>
-                                            </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('branch/table/order/list/confirmed')?'active':''}}">
-                                    <a class="nav-link" href="{{route('branch.table.order.list',['confirmed'])}}"
-                                       title="">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">
-                                                {{translate('confirmed')}}
-                                            <span class="badge badge-info badge-pill ml-1">
-                                                {{\App\Model\Order::dineIn()->where(['order_status'=>'confirmed'])->where(['branch_id' => auth('branch')->id()])->count()}}
-                                            </span>
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('branch/table/order/list/cooking')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.table.order.list',['cooking'])}}"
-                                       title="">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">
-                                                {{translate('cooking')}}
-                                                <span class="badge badge-warning badge-pill ml-1">
-                                                    {{\App\Model\Order::dineIn()->where(['order_status'=>'cooking'])->where(['branch_id' => auth('branch')->id()])->count()}}
-                                                </span>
-                                            </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('branch/table/order/list/done')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.table.order.list',['done'])}}" title="">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">
-                                                {{translate('Ready For Serve')}}
-                                                <span class="badge badge-soft-dark badge-pill ml-1">
-                                                    {{\App\Model\Order::dineIn()->where(['order_status'=>'done'])->where(['branch_id' => auth('branch')->id()])->count()}}
-                                                </span>
-                                            </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('branch/table/order/running')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.table.order.running')}}" title="">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">
-                                                {{translate('On Table')}}
-                                                <span class="badge badge-success badge-pill ml-1">
-                                                    {{\App\Model\Order::with('table_order')->whereHas('table_order', function($q){
-                                                                    $q->where('branch_table_token_is_expired', 0);
-                                                                })->where(['branch_id' => auth('branch')->id()])->count()}}
-                                                </span>
-                                            </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('branch/table/order/list/completed')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.table.order.list',['completed'])}}"
-                                       title="">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">
-                                                {{translate('completed')}}
-                                                <span class="badge badge-success badge-pill ml-1">
-                                                    {{\App\Model\Order::dineIn()->where(['order_status'=>'completed'])->where(['branch_id' => auth('branch')->id()])->count()}}
-                                                </span>
-                                            </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <small class="nav-subtitle">{{translate('table')}} {{translate('section')}}</small>
-                            <small class="tio-more-horizontal nav-subtitle-replacer"></small>
-                        </li>
-
-                        <li class="navbar-vertical-aside-has-menu {{Request::is('branch/table*')?'active':''}}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
-                               href="javascript:">
-                                <i class="tio-gift nav-icon"></i>
-                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{translate('table')}}
-                                </span>
-                                <label class="badge badge-danger">{{translate('addon')}}</label>
-                            </a>
-                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                style="display: {{Request::is('branch/table*')?'block':'none'}}">
-                                <li class="nav-item {{Request::is('branch/table/list')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.table.list')}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">{{translate('list')}}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('branch/table/index')?'active':''}}">
-                                    <a class="nav-link" href="{{route('branch.table.index')}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">{{translate('Availability')}}</span>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                        <li class="navbar-vertical-aside-has-menu {{Request::is('branch/promotion/*')?'active':''}}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link "
-                               href="{{route('branch.promotion.create')}}">
-                                <i class="tio-settings nav-icon"></i>
-                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{translate('Table Promotion')}}
-                                </span>
-                                <label class="badge badge-danger">{{translate('addon')}}</label>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <small
-                                class="nav-subtitle">{{translate('kitchen')}} {{translate('section')}}</small>
-                            <small class="tio-more-horizontal nav-subtitle-replacer"></small>
-                        </li>
-                        <li class="navbar-vertical-aside-has-menu {{Request::is('branch/kitchen/*')?'active':''}}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
-                                <i class="tio-shopping nav-icon"></i>
-                                <span
-                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{translate('Chef')}}
-                                </span>
-                                <label class="badge badge-danger">{{translate('addon')}}</label>
-                            </a>
-                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                style="display: {{Request::is('branch/pos/*')?'block':'none'}}">
-                                <li class="nav-item {{Request::is('branch/kitchen/add-new')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.kitchen.add-new')}}"
-                                       title="{{translate('add new')}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span
-                                            class="text-truncate">{{translate('add new')}}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('branch/kitchen/list')?'active':''}}">
-                                    <a class="nav-link " href="{{route('branch.kitchen.list')}}"
-                                       title="{{translate('list')}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">{{translate('list')}}
-                                    </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        <!-- End Pages -->
 
                     </ul>
                 </div>

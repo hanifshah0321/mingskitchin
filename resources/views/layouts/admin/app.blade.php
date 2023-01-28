@@ -305,14 +305,14 @@
 
     function route_alert(route, message) {
         Swal.fire({
-            title: '{{translate("Are you sure?")}}',
+            title: 'Are you sure?',
             text: message,
             type: 'warning',
             showCancelButton: true,
             cancelButtonColor: 'default',
             confirmButtonColor: '#FC6A57',
-            cancelButtonText: '{{translate("No")}}',
-            confirmButtonText:'{{translate("Yes")}}',
+            cancelButtonText: 'No',
+            confirmButtonText: 'Yes',
             reverseButtons: true
         }).then((result) => {
             if (result.value) {
@@ -323,14 +323,14 @@
 
     function form_alert(id, message) {
         Swal.fire({
-            title: '{{translate("Are you sure?")}}',
+            title: 'Are you sure?',
             text: message,
             type: 'warning',
             showCancelButton: true,
             cancelButtonColor: 'default',
             confirmButtonColor: '#FC6A57',
-            cancelButtonText: '{{translate("No")}}',
-            confirmButtonText: '{{translate("Yes")}}',
+            cancelButtonText: 'No',
+            confirmButtonText: 'Yes',
             reverseButtons: true
         }).then((result) => {
             if (result.value) {

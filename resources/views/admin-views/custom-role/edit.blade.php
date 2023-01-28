@@ -8,14 +8,12 @@
 
 @section('content')
     <div class="content container-fluid">
-        <div class="pb-3">
-            <div class="row align-items-center">
-                <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class="text-capitalize"><i
-                            class="tio-edit"></i> {{translate('Role Update')}}</h1>
-                </div>
-            </div>
-        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">{{translate('Dashboard')}}</a></li>
+                <li class="breadcrumb-item" aria-current="page">{{translate('Role Update')}}</li>
+            </ol>
+        </nav>
 
         <!-- Content Row -->
         <div class="row">

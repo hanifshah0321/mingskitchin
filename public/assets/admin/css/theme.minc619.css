@@ -4,7 +4,6 @@
  * Copyright 2011-2020 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap');
 :root {
     --blue: #FC6A57;
     --indigo: #6610f2;
@@ -26661,55 +26660,4 @@ a:hover .text-hover-primary {
 .tagify.tagify-form-control-list {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0
-}
-#printableAreaContent * {
-        color: #000000;
-        font-weight: 600 !important;
-        font-family: 'Roboto Mono', monospace !important;
-
-}
-#printableAreaContent .btn {
-        color: #ffffff !important;
-        font-weight: 400;
-}
-    #printableAreaContent .h1,
-    #printableAreaContent .h2,
-    #printableAreaContent .h3,
-    #printableAreaContent .h4, 
-    #printableAreaContent .h5,
-    #printableAreaContent .h6,
-    #printableAreaContent h1,
-    #printableAreaContent h2,
-    #printableAreaContent h3,
-    #printableAreaContent h4, 
-    #printableAreaContent h5,
-    #printableAreaContent h6 {
-        font-weight: 700 !important;
-
-    }
-@media print {
-#printableAreaContent * {
-        color: #000000;
-        font-weight: 600 !important;
-        font-family: 'Roboto Mono', monospace !important;
-}
-    #printableAreaContent .h1,
-    #printableAreaContent .h2,
-    #printableAreaContent .h3,
-    #printableAreaContent .h4, 
-    #printableAreaContent .h5,
-    #printableAreaContent .h6,
-    #printableAreaContent h1,
-    #printableAreaContent h2,
-    #printableAreaContent h3,
-    #printableAreaContent h4, 
-    #printableAreaContent h5,
-    #printableAreaContent h6 {
-        font-weight: 700 !important;
-
-    }
-        @page {
-            size: auto;   /* auto is the initial value */
-            margin: 2px;
-        }
 }

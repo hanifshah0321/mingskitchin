@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i class="tio-add-circle-outlined"></i> {{translate('add New Category')}}</h1>
+                    <h1 class="page-header-title"><i class="tio-add-circle-outlined"></i> {{translate('add New Category')}}</h1>
                 </div>
             </div>
         </div>
@@ -170,12 +170,12 @@
                                         @if($category['status']==1)
                                             <div style="padding: 10px;border: 1px solid;cursor: pointer"
                                                  onclick="location.href='{{route('admin.category.status',[$category['id'],0])}}'">
-                                                <span class="legend-indicator bg-success"></span>active
+                                                <span class="legend-indicator bg-success"></span>{{translate('active')}}
                                             </div>
                                         @else
                                             <div style="padding: 10px;border: 1px solid;cursor: pointer"
                                                  onclick="location.href='{{route('admin.category.status',[$category['id'],1])}}'">
-                                                <span class="legend-indicator bg-danger"></span>disabled
+                                                <span class="legend-indicator bg-danger"></span>{{translate('disabled')}}
                                             </div>
                                         @endif
                                     </td>

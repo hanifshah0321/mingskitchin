@@ -180,7 +180,7 @@
                 <div class="card">
                     <div class="card-body" style="padding: 20px">
                         <h5 class="text-center">{{translate('msg91_sms')}}</h5>
-                        <span class="badge badge-soft-info mb-3">{{translate('NB : Keep an OTP variable in your SMS providers OTP Template.')}}</span><br>
+                        <span class="badge badge-soft-info mb-3">NB : Keep an OTP variable in your SMS providers OTP Template.</span><br>
                         @php($config=\App\CentralLogics\Helpers::get_business_settings('msg91_sms'))
                         <form action="{{env('APP_MODE')!='demo'?route('admin.business-settings.web-app.sms-module-update',['msg91_sms']):'javascript:'}}"
                               method="post">

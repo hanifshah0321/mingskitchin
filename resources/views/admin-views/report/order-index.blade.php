@@ -21,7 +21,7 @@
                 <div class="media-body">
                     <div class="row">
                         <div class="col-lg mb-3 mb-lg-0">
-                            <h1 class="page-header-title">{{translate('Order Report Overview')}}</h1>
+                            <h1 class="page-header-title">{{translate('order Report Overview')}}</h1>
 
                             <div class="row align-items-center">
                                 <div class="col-auto">
@@ -581,7 +581,7 @@
                                                 <div class="col-sm-auto align-self-sm-end">
                                                     <!-- Avatar Group -->
                                                     <div class="">
-                                                        {{translate('status')}} <strong> : {{translate($order['order_status'])}} <br></strong>
+                                                        {{translate('status')}} <strong> : {{$order['order_status']}} <br></strong>
                                                     </div>
                                                     <!-- End Avatar Group -->
                                                 </div>
@@ -810,7 +810,7 @@
                 if (fr > to) {
                     $('#from_date').val('');
                     $('#to_date').val('');
-                    toastr.error('{{translate("Invalid date range!")}}', Error, {
+                    toastr.error('Invalid date range!', Error, {
                         CloseButton: true,
                         ProgressBar: true
                     });

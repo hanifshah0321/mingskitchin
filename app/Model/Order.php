@@ -45,30 +45,9 @@ class Order extends Model
         return $this->belongsTo(CustomerAddress::class, 'delivery_address_id');
     }
 
-    public function table_order()
-    {
-        return $this->belongsTo(TableOrder::class, 'table_order_id', 'id');
-    }
-
-    public function table()
-    {
-        return $this->belongsTo(Table::class, 'table_id', 'id');
-    }
-
     public function scopePos($query)
     {
         return $query->where('order_type', '=' , 'pos');
-    }
-
-    public function scopeDineIn($query)
-    {
-        return $query->where('order_type', '=' , 'dine_in');
-    }
-
-
-    public function scopeNotDineIn($query)
-    {
-        return $query->where('order_type', '!=' , 'dine_in');
     }
 
     public function scopeNotPos($query)
@@ -84,10 +63,5 @@ class Order extends Model
     public function scopeNotSchedule($query)
     {
         return $query->whereDate('delivery_date','<=',\Carbon\Carbon::now()->format('Y-m-d'));
-    }
-
-    public function scopeEarningReport($query)
-    {
-        return $query->whereIn('order_status', ['delivered', 'completed']);
     }
 }

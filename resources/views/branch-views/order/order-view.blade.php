@@ -9,7 +9,7 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="d-print-none">
+        <div class="page-header d-print-none">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
                     <nav aria-label="breadcrumb">
@@ -77,7 +77,7 @@
                         @endif
 
                         {{-- counter --}}
-                        @if($order['order_type'] != 'pos' && $order['order_type'] != 'take_away' && ($order['order_status'] != DELIVERED && $order['order_status'] != RETURNED && $order['order_status'] != CANCELED && $order['order_status'] != FAILED && $order['order_status'] != COMPLETED))
+                        @if($order['order_type'] != 'pos' && $order['order_type'] != 'take_away' && ($order['order_status'] != DELIVERED && $order['order_status'] != RETURNED && $order['order_status'] != CANCELED && $order['order_status'] != FAILED))
                             <span class="ml-2 ml-sm-3 ">
                                 <i class="tio-timer d-none" id="timer-icon"></i>
                                 <span id="counter" class="text-info"></span>
@@ -97,11 +97,11 @@
                                 class="tio-print mr-1"></i> {{translate('print')}} {{translate('invoice')}}</span>
 
                         <!-- Unfold -->
-                        @if($order['order_type']!='take_away' && $order['order_type'] != 'pos' && $order['order_status'] != 'delivered' && $order['order_type'] != 'dine_in')
+                        @if($order['order_type']!='take_away' && $order['order_type'] != 'pos' && $order['order_status'] != 'delivered')
                             <div class="hs-unfold">
                                 <select class="form-control" name="delivery_man_id"
                                         onchange="addDeliveryMan(this.value)">
-                                    <option value="0">{{translate('Select Delivery Man')}}</option>
+                                    <option value="0">Select Delivery Man</option>
                                     @foreach(\App\Model\DeliveryMan::where(['branch_id'=>auth('branch')->id()])->orWhere(['branch_id'=>0])->get() as $deliveryMan)
                                         <option
                                             value="{{$deliveryMan['id']}}" {{$order['delivery_man_id']==$deliveryMan['id']?'selected':''}}>
@@ -121,50 +121,24 @@
                                             <i class="tio-map"></i>
                                         </a>--}}
                                         <a class="btn btn-outline-primary" target="_blank"
-                                           title="{{translate('Delivery Boy Last Location')}}" data-toggle="tooltip" data-placement="top"
+                                           title="Delivery Boy Last Location" data-toggle="tooltip" data-placement="top"
                                            href="https://www.google.com/maps/dir/?api=1&origin={{$origin['latitude']}},{{$origin['longitude']}}&destination={{$current['latitude']}},{{$current['longitude']}}">
                                             <i class="tio-map"></i>
                                         </a>
                                     @else
                                         <a class="btn btn-outline-primary" href="javascript:" data-toggle="tooltip"
-                                           data-placement="top" title="{{translate('Waiting for location...')}}">
+                                           data-placement="top" title="Waiting for location...">
                                             <i class="tio-map"></i>
                                         </a>
                                     @endif
                                 @else
                                     <a class="btn btn-outline-dark" href="javascript:" onclick="last_location_view()"
                                        data-toggle="tooltip" data-placement="top"
-                                       title="{{translate('Only available when order is out for delivery!')}}">
+                                       title="Only available when order is out for delivery!">
                                         <i class="tio-map"></i>
                                     </a>
                                 @endif
                             </div>
-                        @endif
-
-                        <div class="hs-unfold ml-1">
-                            <h5 class="text-capitalize">
-                                <i class="tio-shop"></i>
-                                {{translate('branch')}} : <label
-                                    class="badge badge-secondary">{{$order->branch?$order->branch->name:'Branch deleted!'}}</label>
-                            </h5>
-                        </div>
-                        @if($order['order_type'] == 'dine_in')
-                            <div class="hs-unfold ml-1">
-                                <h5 class="text-capitalize">
-                                    <i class="tio-table"></i>
-                                    {{translate('table no')}} : <label
-                                        class="badge badge-secondary">{{$order->table?$order->table->number:'Table deleted!'}}</label>
-                                </h5>
-                            </div>
-                            @if($order['number_of_people'] != null)
-                                <div class="hs-unfold ml-1">
-                                    <h5 class="text-capitalize">
-                                        <i class="tio-user"></i>
-                                        {{translate('number of people')}} : <label
-                                            class="badge badge-secondary">{{$order->number_of_people}}</label>
-                                    </h5>
-                                </div>
-                            @endif
                         @endif
 
                         <div class="hs-unfold float-right">
@@ -175,45 +149,30 @@
                                             aria-expanded="false">
                                         {{translate('status')}}
                                     </button>
-
-                                    <div class="dropdown-menu text-capitalize dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        @if($order['order_type'] != 'dine_in')
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item"
-                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'pending'])}}','{{\App\CentralLogics\translate("Change status to pending ?")}}')"
+                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'pending'])}}','Change status to pending ?')"
                                            href="javascript:">{{translate('pending')}}</a>
-                                        @endif
-
                                         <a class="dropdown-item"
-                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'confirmed'])}}','{{\App\CentralLogics\translate("Change status to confirmed ?")}}')"
+                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'confirmed'])}}','Change status to confirmed ?')"
                                            href="javascript:">{{translate('confirmed')}}</a>
-
-                                        @if($order['order_type'] != 'dine_in')
-                                            <a class="dropdown-item"
-                                               onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'processing'])}}','{{\App\CentralLogics\translate("Change status to processing ?")}}')"
-                                               href="javascript:">{{translate('processing')}}</a>
-                                            <a class="dropdown-item"
-                                               onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'out_for_delivery'])}}','{{\App\CentralLogics\translate("Change status to out for delivery ?")}}')"
-                                               href="javascript:">{{translate('out_for_delivery')}}</a>
-                                            <a class="dropdown-item"
-                                               onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'delivered'])}}','{{\App\CentralLogics\translate("Change status to delivered ?")}}')"
-                                               href="javascript:">{{translate('delivered')}}</a>
-                                            <a class="dropdown-item"
-                                               onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'returned'])}}','{{\App\CentralLogics\translate("Change status to returned ?")}}')"
-                                               href="javascript:">{{translate('returned')}}</a>
-                                            <a class="dropdown-item"
-                                               onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'failed'])}}','{{\App\CentralLogics\translate("Change status to failed ?")}}')"
-                                               href="javascript:">{{translate('failed')}}</a>
-                                        @endif
-                                            @if($order['order_type'] == 'dine_in')
-                                            <a class="dropdown-item"
-                                               onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'cooking'])}}','{{\App\CentralLogics\translate("Change status to cooking ?")}}')"
-                                               href="javascript:">{{translate('cooking')}}</a>
-                                            <a class="dropdown-item"
-                                               onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'completed'])}}','{{\App\CentralLogics\translate("Change status to completed ?")}}')"
-                                               href="javascript:">{{translate('completed')}}</a>
-                                        @endif
                                         <a class="dropdown-item"
-                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'canceled'])}}','{{\App\CentralLogics\translate("Change status to canceled ?")}}')"
+                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'processing'])}}','Change status to processing ?')"
+                                           href="javascript:">{{translate('processing')}}</a>
+                                        <a class="dropdown-item"
+                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'out_for_delivery'])}}','Change status to out for delivery ?')"
+                                           href="javascript:">{{translate('out_for_delivery')}}</a>
+                                        <a class="dropdown-item"
+                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'delivered'])}}','Change status to delivered ?')"
+                                           href="javascript:">{{translate('delivered')}}</a>
+                                        <a class="dropdown-item"
+                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'returned'])}}','Change status to returned ?')"
+                                           href="javascript:">{{translate('returned')}}</a>
+                                        <a class="dropdown-item"
+                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'failed'])}}','Change status to failed ?')"
+                                           href="javascript:">{{translate('failed')}}</a>
+                                        <a class="dropdown-item"
+                                           onclick="route_alert('{{route('branch.orders.status',['id'=>$order['id'],'order_status'=>'canceled'])}}','Change status to canceled ?')"
                                            href="javascript:">{{translate('canceled')}}</a>
                                     </div>
                                 </div>
@@ -229,10 +188,10 @@
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item"
-                                           onclick="route_alert('{{route('branch.orders.payment-status',['id'=>$order['id'],'payment_status'=>'paid'])}}','{{translate('Change status to paid ?')}}')"
+                                           onclick="route_alert('{{route('branch.orders.payment-status',['id'=>$order['id'],'payment_status'=>'paid'])}}','Change status to paid ?')"
                                            href="javascript:">{{translate('paid')}}</a>
                                         <a class="dropdown-item"
-                                           onclick="route_alert('{{route('branch.orders.payment-status',['id'=>$order['id'],'payment_status'=>'unpaid'])}}','{{translate('Change status to unpaid ?')}}')"
+                                           onclick="route_alert('{{route('branch.orders.payment-status',['id'=>$order['id'],'payment_status'=>'unpaid'])}}','Change status to unpaid ?')"
                                            href="javascript:">{{translate('unpaid')}}</a>
                                     </div>
                                 </div>
@@ -245,12 +204,12 @@
                 <div class="col-sm-auto">
                     <a class="btn btn-icon btn-sm btn-ghost-secondary rounded-circle mr-1"
                        href="{{route('branch.orders.details',[$order['id']-1])}}"
-                       data-toggle="tooltip" data-placement="top" title="{{translate('Previous order')}}">
+                       data-toggle="tooltip" data-placement="top" title="Previous order">
                         <i class="tio-arrow-backward"></i>
                     </a>
                     <a class="btn btn-icon btn-sm btn-ghost-secondary rounded-circle"
                        href="{{route('branch.orders.details',[$order['id']+1])}}" data-toggle="tooltip"
-                       data-placement="top" title="{{translate('Next order')}}">
+                       data-placement="top" title="Next order">
                         <i class="tio-arrow-forward"></i>
                     </a>
                 </div>
@@ -408,9 +367,6 @@
                                     <dt class="col-sm-6">{{translate('coupon')}} {{translate('discount')}}:</dt>
                                     <dd class="col-sm-6">
                                         - {{ \App\CentralLogics\Helpers::set_symbol($order['coupon_discount_amount']) }}</dd>
-                                    <dt class="col-sm-6">{{translate('extra discount')}} :</dt>
-                                    <dd class="col-sm-6">
-                                        - {{ \App\CentralLogics\Helpers::set_symbol($order['extra_discount']) }}</dd>
                                     <dt class="col-sm-6">{{translate('delivery')}} {{translate('fee')}}:</dt>
                                     <dd class="col-sm-6">
                                         @if($order['order_type']=='take_away')
@@ -423,7 +379,7 @@
                                     </dd>
 
                                     <dt class="col-sm-6">{{translate('total')}}:</dt>
-                                    <dd class="col-sm-6">{{ \App\CentralLogics\Helpers::set_symbol($sub_total+$del_c+$total_tax+$add_ons_cost-$order['coupon_discount_amount']-$order['extra_discount']) }}</dd>
+                                    <dd class="col-sm-6">{{ \App\CentralLogics\Helpers::set_symbol($sub_total+$del_c+$total_tax+$add_ons_cost-$order['coupon_discount_amount']) }}</dd>
                                 </dl>
                                 <!-- End Row -->
                             </div>
@@ -496,14 +452,14 @@
                                 </li>
                             </ul>
 
-                            @if($order['order_type']!='take_away' && $order['order_type']!='dine_in')
+                            @if($order['order_type']!='take_away')
                                 <hr>
                                 @php($address=\App\Model\CustomerAddress::find($order['delivery_address_id']))
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h5>{{translate('Delivery address')}}</h5>
+                                    <h5>Delivery address</h5>
                                     @if(isset($address))
                                         <a class="link" data-toggle="modal" data-target="#shipping-address-modal"
-                                           href="javascript:">{{translate('Edit')}}</a>
+                                           href="javascript:">Edit</a>
                                     @endif
                                 </div>
                                 @if(isset($address))
@@ -673,11 +629,11 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body row">
+                <div class="modal-body row" style="font-family: emoji;">
                     <div class="col-md-12">
                         <center>
                             <input type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea')"
-                                   value="{{translate('Proceed, If thermal printer is ready.')}}"/>
+                                   value="Proceed, If thermal printer is ready."/>
                             <a href="{{url()->previous()}}" class="btn btn-danger non-printable">{{translate('Back')}}</a>
                         </center>
                         <hr class="non-printable">
@@ -692,7 +648,7 @@
     </div>
 
     <!-- Modal -->
-    @if($order['order_type'] != 'pos' && $order['order_type'] != 'take_away' && ($order['order_status'] != DELIVERED && $order['order_status'] != RETURNED && $order['order_status'] != CANCELED && $order['order_status'] != FAILED && $order['order_status'] != COMPLETED))
+    @if($order['order_type'] != 'pos' && $order['order_type'] != 'take_away' && ($order['order_status'] != DELIVERED && $order['order_status'] != RETURNED && $order['order_status'] != CANCELED && $order['order_status'] != FAILED))
         <div class="modal fade" id="counter-change" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
@@ -738,7 +694,7 @@
                 url: '{{url('/')}}/branch/orders/add-delivery-man/{{$order['id']}}/' + id,
                 data: $('#product_form').serialize(),
                 success: function (data) {
-                    toastr.success('{{ translate('Successfully added') }}', {
+                    toastr.success('Successfully added', {
                         CloseButton: true,
                         ProgressBar: true
                     });
@@ -753,7 +709,7 @@
         }
 
         function last_location_view() {
-            toastr.warning('{{ translate('Only available when order is out for delivery!') }}', {
+            toastr.warning('Only available when order is out for delivery!', {
                 CloseButton: true,
                 ProgressBar: true
             });
@@ -793,7 +749,7 @@
         }
     </script>
 
-    @if($order['order_type'] != 'pos' && $order['order_type'] != 'take_away' && ($order['order_status'] != DELIVERED && $order['order_status'] != RETURNED && $order['order_status'] != CANCELED && $order['order_status'] != FAILED && $order['order_status'] != COMPLETED))
+    @if($order['order_type'] != 'pos' && $order['order_type'] != 'take_away' && ($order['order_status'] != DELIVERED && $order['order_status'] != RETURNED && $order['order_status'] != CANCELED && $order['order_status'] != FAILED))
         <script>
             const expire_time = "{{ $order['remaining_time'] }}";
             var countDownDate = new Date(expire_time).getTime();

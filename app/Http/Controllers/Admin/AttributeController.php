@@ -82,7 +82,7 @@ class AttributeController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|unique:attributes,name,' . $id,
+            'name' => 'required',
         ]);
 
         foreach ($request->name as $name) {

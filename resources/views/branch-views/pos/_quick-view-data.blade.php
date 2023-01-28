@@ -75,7 +75,7 @@
 
             @if($product->discount > 0)
                 <div class="mb-3 text-dark">
-                    <strong>{{translate('Discount : ')}}</strong>
+                    <strong>Discount : </strong>
                     <strong
                         id="set-discount-amount">{{ \App\CentralLogics\Helpers::set_symbol(\App\CentralLogics\Helpers::discount_calculate($product, $product->price)) }}</strong>
                 </div>
@@ -123,7 +123,7 @@
 
             <!-- Quantity + Add to cart -->
                 <div class="d-flex justify-content-between">
-                    <div class="product-description-label mt-2 text-dark h3">{{translate('Quantity : ')}}</div>
+                    <div class="product-description-label mt-2 text-dark h3">{{translate('Quantity')}}:</div>
                     <div class="product-quantity d-flex align-items-center">
                         <div class="input-group input-group--style-2 pr-3"
                              style="width: 160px;">
@@ -181,7 +181,7 @@
                 @endif
                 <div class="row no-gutters mt-2 text-dark" id="chosen_price_div">
                     <div class="col-2">
-                        <div class="product-description-label">{{translate('Total Price : ')}}</div>
+                        <div class="product-description-label">{{translate('Total Price')}}:</div>
                     </div>
                     <div class="col-10">
                         <div class="product-price">

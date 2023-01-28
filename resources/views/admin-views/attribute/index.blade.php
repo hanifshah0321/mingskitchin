@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i class="tio-add-circle-outlined"></i> {{translate('Add New Attribute')}}</h1>
+                    <h1 class="page-header-title"><i class="tio-add-circle-outlined"></i> {{translate('Add New Attribute')}}</h1>
                 </div>
             </div>
         </div>
@@ -64,8 +64,8 @@
                 </form>
             </div>
 
-            <div class="col-sm-12 col-lg-12 mb-3 mb-lg-2 mt-3">
-
+            <div class="col-sm-12 col-lg-12 mb-3 mb-lg-2">
+                <hr>
                 <div class="card">
                     <div class="card-header">
                         <div class="flex-start">
@@ -105,7 +105,7 @@
                                                 <a class="dropdown-item"
                                                    href="{{route('admin.attribute.edit',[$attribute['id']])}}">{{translate('edit')}}</a>
                                                 <a class="dropdown-item" href="javascript:"
-                                                   onclick="form_alert('attribute-{{$attribute['id']}}','{{translate('Want to delete this attribute ?')}}')">{{translate('delete')}}</a>
+                                                   onclick="form_alert('attribute-{{$attribute['id']}}','Want to delete this attribute ?')">{{translate('delete')}}</a>
                                                 <form action="{{route('admin.attribute.delete',[$attribute['id']])}}"
                                                       method="post" id="attribute-{{$attribute['id']}}">
                                                     @csrf @method('delete')

@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class="pb-2"><i class="tio-edit"></i>
+                    <h1 class="page-header-title"><i class="tio-edit"></i>
                         @if($category->parent_id == 0)
                             {{translate('category Update')}}</h1>
                         @else

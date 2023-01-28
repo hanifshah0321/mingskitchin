@@ -76,9 +76,8 @@ class DashboardController extends Controller
 
         $earning = [];
         $earning_data = Order::where([
-            'order_status' => 'delivered',
-        ])->where('order_type', '!=', 'pos')
-            ->select(
+            'order_status' => 'delivered'
+        ])->select(
             DB::raw('IFNULL(sum(order_amount),0) as sums'),
             DB::raw('YEAR(created_at) year, MONTH(created_at) month')
         )->whereBetween('created_at', [$from, $to])->groupby('year', 'month')->get()->toArray();
@@ -91,40 +90,7 @@ class DashboardController extends Controller
             }
         }
 
-        $table_earning = [];
-        $table_earning_data = Order::where([
-            'order_status' => 'completed'
-        ])->select(
-            DB::raw('IFNULL(sum(order_amount),0) as sums'),
-            DB::raw('YEAR(created_at) year, MONTH(created_at) month')
-        )->whereBetween('created_at', [$from, $to])->groupby('year', 'month')->get()->toArray();
-        for ($inc = 1; $inc <= 12; $inc++) {
-            $table_earning[$inc] = 0;
-            foreach ($table_earning_data as $match) {
-                if ($match['month'] == $inc) {
-                    $table_earning[$inc] = Helpers::set_price($match['sums']);
-                }
-            }
-        }
-
-        $pos_earning = [];
-        $pos_earning_data = Order::where([
-            'order_status' => 'delivered', 'order_type' => 'pos'
-        ])
-            ->select(
-                DB::raw('IFNULL(sum(order_amount),0) as sums'),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month')
-            )->whereBetween('created_at', [$from, $to])->groupby('year', 'month')->get()->toArray();
-        for ($inc = 1; $inc <= 12; $inc++) {
-            $pos_earning[$inc] = 0;
-            foreach ($pos_earning_data as $match) {
-                if ($match['month'] == $inc) {
-                    $pos_earning[$inc] = Helpers::set_price($match['sums']);
-                }
-            }
-        }
-
-        return view('admin-views.dashboard', compact('data', 'earning', 'table_earning', 'pos_earning'));
+        return view('admin-views.dashboard', compact('data', 'earning'));
     }
 
     public function order_stats(Request $request)
@@ -173,7 +139,7 @@ class DashboardController extends Controller
                 return $query->whereMonth('created_at', Carbon::now());
             })
             ->count();
-        $delivered = Order::where(['order_status' => 'delivered'])
+        $delivered = Order::where(['order_status' => 'delivered'])->notPos()
             ->when($today, function ($query) {
                 return $query->whereDate('created_at', Carbon::today());
             })
@@ -181,7 +147,8 @@ class DashboardController extends Controller
                 return $query->whereMonth('created_at', Carbon::now());
             })
             ->count();
-        $all = Order::when($today, function ($query) {
+        $all = Order::notPos()
+        ->when($today, function ($query) {
             return $query->whereDate('created_at', Carbon::today());
         })
             ->when($this_month, function ($query) {

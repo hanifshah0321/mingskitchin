@@ -124,7 +124,7 @@
                                 </label>
                             </td>`;
                             // html += '<td><a type="button" class="btn btn-primary btn-xs edit" id="' + data[count].id + '"><i class="fa fa-edit text-white"></i></a> <a type="button" class="btn btn-danger btn-xs delete" id="' + data[count].id + '"><i class="fa fa-trash text-white"></i></a></td></tr>';
-                            html += '<td><a type="button" class="btn btn-primary btn-xs edit" id="' + data[count].id + '">{{ translate('Edit')}}</a> </td></tr>';
+                            html += '<td><a type="button" class="btn btn-primary btn-xs edit" id="' + data[count].id + '">Edit</a> </td></tr>';
                         }
                         $('tbody').html(html);
                     }

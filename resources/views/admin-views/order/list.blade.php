@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="">
+        <div class="page-header">
             <div class="row align-items-center mb-3">
                 <div class="col-9">
-                    <h1 class="">{{translate('online')}} {{translate('orders')}}<span class="badge badge-soft-dark ml-2">{{$orders->total()}}</span></h1>
+                    <h1 class="page-header-title">{{translate('orders')}} <span class="badge badge-soft-dark ml-2">{{$orders->total()}}</span></h1>
                 </div>
 
                 <div class="col-3">
@@ -46,6 +46,13 @@
               </a>
             </span>
 
+                <!-- Nav -->
+                <ul class="nav nav-tabs page-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">{{translate('order')}} {{translate('list')}}</a>
+                    </li>
+                </ul>
+                <!-- End Nav -->
             </div>
             <!-- End Nav Scroller -->
         </div>
@@ -76,7 +83,7 @@
 
                     <div class="col-lg-6">
                         <a href="{{route('admin.orders.export')}}" class="btn btn-secondary float-right"><i class="tio-pages"></i>
-                            {{translate('Bulk Export')}}</a>
+                            Bulk Export</a>
                     </div>
                 </div>
                 <!-- End Row -->
@@ -99,7 +106,6 @@
                         <th>{{translate('payment')}} {{translate('status')}}</th>
                         <th>{{translate('total')}}</th>
                         <th>{{translate('order')}} {{translate('status')}}</th>
-                        <th>{{translate('order')}} {{translate('type')}}</th>
                         <th>{{translate('actions')}}</th>
                     </tr>
                     </thead>
@@ -120,9 +126,8 @@
                                     <a class="text-body text-capitalize"
                                        href="{{route('admin.customer.view',[$order['user_id']])}}">{{$order->customer['f_name'].' '.$order->customer['l_name']}}</a>
                                 @else
-                                    <span class="badge-pill badge-soft-dark text-muted text-sm small">
-                                        {{translate('Customer unavailable')}}
-                                    </span>
+                                    <label
+                                        class="badge badge-danger">{{translate('invalid')}} {{translate('customer')}} {{translate('data')}}</label>
                                 @endif
                             </td>
                             <td>
@@ -168,25 +173,6 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="text-capitalize">
-                                @if($order['order_type']=='take_away')
-                                    <span class="badge badge-soft-info ml-2 ml-sm-3">
-                                        <span class="legend-indicator bg-info"></span>{{translate('take_away')}}
-                                    </span>
-                                @elseif($order['order_type']=='pos')
-                                    <span class="badge badge-soft-info ml-2 ml-sm-3">
-                                        <span class="legend-indicator bg-info"></span>{{translate('POS')}}
-                                    </span>
-                                    @elseif($order['order_type']=='dine_in')
-                                        <span class="badge badge-soft-info ml-2 ml-sm-3">
-                                        <span class="legend-indicator bg-info"></span>{{translate('Dine In')}}
-                                    </span>
-                                @elseif($order['order_type']=='delivery')
-                                    <span class="badge badge-soft-success ml-2 ml-sm-3">
-                                      <span class="legend-indicator bg-success"></span>{{translate('delivery')}}
-                                    </span>
-                                @endif
-                            </td>
                             <td>
                                 <div class="dropdown">
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"
@@ -215,7 +201,7 @@
             <!-- Footer -->
             <div class="card-footer">
                 <!-- Pagination -->
-                <div class="">
+                <div class="card-footer">
                     <div class="row">
                         <div class="col-12" style="overflow-x: scroll;">
                             {!!$orders->links()!!}

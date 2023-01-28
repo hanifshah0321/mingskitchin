@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-2">
+        <div class="page-header">
             <div class="row align-items-center mb-3">
                 <div class="col-sm">
-                    <h1 class="">{{translate('Subscribed Customers')}}
+                    <h1 class="page-header-title">{{translate('Subscribed Customers')}}
                         <span class="badge badge-soft-dark ml-2">({{ $newsletters->total() }})</span>
                     </h1>
                 </div>
@@ -33,6 +33,13 @@
               </a>
             </span>
 
+                <!-- Nav -->
+                <ul class="nav nav-tabs page-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active"
+                           href="#">{{translate('Email List')}}</a>
+                    </li>
+                </ul>
                 <!-- End Nav -->
             </div>
             <!-- End Nav Scroller -->

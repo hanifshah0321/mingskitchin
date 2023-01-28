@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Http\JsonResponse;
 
 class CustomerAuthController extends Controller
 {
@@ -166,18 +165,18 @@ class CustomerAuthController extends Controller
             'password' => bcrypt($request->password),
             'temporary_token' => $temporary_token,
         ]);
-
+           $userid = $user->id;
         $phone_verification = Helpers::get_business_settings('phone_verification');
         $email_verification = Helpers::get_business_settings('email_verification');
         if ($phone_verification && !$user->is_phone_verified) {
-            return response()->json(['temporary_token' => $temporary_token], 200);
+            return response()->json(['temporary_token' => $temporary_token, 'userid' =>  $userid], 200);
         }
         if ($email_verification && !$user->is_email_verified) {
-            return response()->json(['temporary_token' => $temporary_token], 200);
+            return response()->json(['temporary_token' => $temporary_token, 'userid' =>  $userid], 200);
         }
 
         $token = $user->createToken('RestaurantCustomerAuth')->accessToken;
-        return response()->json(['token' => $token], 200);
+        return response()->json(['token' => $token, 'userid' =>  $userid], 200);
     }
 
     public function login(Request $request)
@@ -204,15 +203,15 @@ class CustomerAuthController extends Controller
         if (isset($user)) {
             $user->temporary_token = Str::random(40);
             $user->save();
+             $userid = $user->id;
             $data = [
                 'email' => $user->email,
-                'password' => $request->password,
-                'user_type' => null,
+                'password' => $request->password
             ];
 
             if (auth()->attempt($data)) {
                 $token = auth()->user()->createToken('RestaurantCustomerAuth')->accessToken;
-                return response()->json(['token' => $token], 200);
+                return response()->json(['token' => $token, 'userid' =>  $userid], 200);
             }
         }
 
@@ -223,19 +222,4 @@ class CustomerAuthController extends Controller
         ], 401);
 
     }
-
-    public function remove_account(Request $request)
-    {
-        $customer = User::find($request->user()->id);
-
-        if(isset($customer)) {
-            Helpers::file_remover('customer/', $customer->image);
-            $customer->delete();
-        } else {
-            return response()->json(['status_code' => 404, 'message' => translate('Not found')], 200);
-        }
-        return response()->json(['status_code' => 200, 'message' => translate('Successfully deleted')], 200);
-    }
-
-
 }

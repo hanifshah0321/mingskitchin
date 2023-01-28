@@ -9,39 +9,64 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-2">
+        <div class="page-header">
             <div class="row align-items-center mb-3">
                 <div class="col-sm">
-                    <h1 class="page-header-title">{{translate('online')}} {{translate('orders')}}
+                    <h1 class="page-header-title">{{translate('orders')}}
                         <span
                             class="badge badge-soft-dark ml-2">{{ $orders->total() }}</span>
                     </h1>
                 </div>
             </div>
             <!-- End Row -->
+
+            <!-- Nav Scroller -->
+            <div class="js-nav-scroller hs-nav-scroller-horizontal">
+            <span class="hs-nav-scroller-arrow-prev" style="display: none;">
+              <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+                <i class="tio-chevron-left"></i>
+              </a>
+            </span>
+
+                <span class="hs-nav-scroller-arrow-next" style="display: none;">
+              <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+                <i class="tio-chevron-right"></i>
+              </a>
+            </span>
+
+                <!-- Nav -->
+                <ul class="nav nav-tabs page-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">{{translate('order')}} {{translate('list')}}</a>
+                    </li>
+                </ul>
+                <!-- End Nav -->
+            </div>
+            <!-- End Nav Scroller -->
         </div>
+        <!-- End Page Header -->
 
         <!-- Card -->
         <div class="card">
             <!-- Header -->
             <div class="card-header">
                 <div class="row justify-content-between align-items-center flex-grow-1">
-                    <div class="col-lg-6"></div>
-                    <div class="col-lg-4 mb-3 mb-lg-0">
-                        <div>
-                            <form action="{{url()->current()}}" method="GET">
-                                <div class="input-group">
-                                    <input id="datatableSearch_" type="search" name="search"
-                                           class="form-control"
-                                           placeholder="{{translate('Search')}}" aria-label="Search"
-                                           value="{{$search}}" required autocomplete="off">
-                                    <div class="input-group-append">
-                                        <button type="submit" class="input-group-text"><i class="tio-search"></i>
-                                        </button>
+                    <div class="col-lg-6 mb-3 mb-lg-0">
+                        <form action="{{url()->current()}}" method="GET">
+                            <!-- Search -->
+                            <div class="input-group input-group-merge input-group-flush">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="tio-search"></i>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+                                <input id="datatableSearch_" type="search" name="search" class="form-control"
+                                       placeholder="{{translate('Search')}}" aria-label="Search" value="{{$search}}" required>
+                                <button type="submit" class="btn btn-primary">search</button>
+
+                            </div>
+                            <!-- End Search -->
+                        </form>
                     </div>
                 </div>
                 <!-- End Row -->
@@ -61,9 +86,9 @@
                         <th>{{translate('date')}}</th>
                         <th>{{translate('customer')}}</th>
                         <th>{{translate('payment')}} {{translate('status')}}</th>
+
                         <th>{{translate('total')}}</th>
                         <th>{{translate('order')}} {{translate('status')}}</th>
-                        <th>{{translate('order')}} {{translate('type')}}</th>
                         <th>{{translate('actions')}}</th>
                     </tr>
                     </thead>
@@ -84,9 +109,8 @@
                                     <a class="text-body text-capitalize"
                                        href="{{route('branch.orders.details',['id'=>$order['id']])}}">{{$order->customer['f_name'].' '.$order->customer['l_name']}}</a>
                                 @else
-                                    <span class="badge-pill badge-soft-dark text-muted text-sm small">
-                                        {{translate('Customer unavailable')}}
-                                    </span>
+                                    <label
+                                        class="badge badge-danger">{{translate('invalid')}} {{translate('customer')}} {{translate('data')}}</label>
                                 @endif
                             </td>
                             <td>
@@ -125,21 +149,6 @@
                                 @else
                                     <span class="badge badge-soft-danger ml-2 ml-sm-3">
                                       <span class="legend-indicator bg-danger"></span>{{str_replace('_',' ',$order['order_status'])}}
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="text-capitalize">
-                                @if($order['order_type']=='take_away')
-                                    <span class="badge badge-soft-info ml-2 ml-sm-3">
-                                        <span class="legend-indicator bg-info"></span>{{translate('take_away')}}
-                                    </span>
-                                @elseif($order['order_type']=='dine_in')
-                                    <span class="badge badge-soft-info ml-2 ml-sm-3">
-                                        <span class="legend-indicator bg-info"></span>{{translate('dine_in')}}
-                                    </span>
-                                @else
-                                    <span class="badge badge-soft-success ml-2 ml-sm-3">
-                                      <span class="legend-indicator bg-success"></span>{{translate('delivery')}}
                                     </span>
                                 @endif
                             </td>
@@ -193,7 +202,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body row">
+                <div class="modal-body row" style="font-family: emoji;">
                     <div class="col-md-12">
                         <center>
                             <input type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea')"

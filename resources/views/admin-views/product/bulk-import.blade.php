@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="jumbotron" style="background: white">
-                    <h1 class="display-4">{{translate('Instructions :')}} </h1>
+                    <h1 class="display-4">Instructions : </h1>
                     <p>{{translate('1. Download the format file and fill it with proper data.')}}</p>
 
                     <p>{{translate('2. You can download the example file to understand how the data must be filled.')}}</p>

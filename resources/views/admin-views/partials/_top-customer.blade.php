@@ -16,7 +16,7 @@
                      onclick="location.href='{{route('admin.customer.view', [$item['user_id']])}}'"
                      style="padding-left: 6px;padding-right: 6px;cursor: pointer">
                     <div class="grid-card" style="min-height: 170px">
-                        <label class="label_1">{{translate('Orders :')}}{{$item['count']}}</label>
+                        <label class="label_1">Orders : {{$item['count']}}</label>
                         <center class="mt-6">
                             <img style="border-radius: 50%;width: 60px;height: 60px;border:2px solid #80808082;"
                                  onerror="this.src='{{asset('public/assets/admin/img/400x400/img2.jpg')}}'"

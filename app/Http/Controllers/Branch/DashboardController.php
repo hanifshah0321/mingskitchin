@@ -21,8 +21,7 @@ class DashboardController extends Controller
         $to = Carbon::now()->endOfYear()->format('Y-m-d');
 
         $earning = [];
-        $earning_data = Order::where(['order_status' => 'delivered', 'branch_id' => auth('branch')->id()])
-            ->where('order_type', '!=', 'pos')->select(
+        $earning_data = Order::where(['order_status' => 'delivered', 'branch_id' => auth('branch')->id()])->select(
             DB::raw('IFNULL(sum(order_amount),0) as sums'),
             DB::raw('YEAR(created_at) year, MONTH(created_at) month')
         )->whereBetween('created_at', [$from, $to])->groupby('year', 'month')->get()->toArray();
@@ -36,39 +35,7 @@ class DashboardController extends Controller
             }
         }
 
-        $table_earning = [];
-        $table_earning_data = Order::where(['order_status' => 'completed', 'branch_id' => auth('branch')->id()])->select(
-            DB::raw('IFNULL(sum(order_amount),0) as sums'),
-            DB::raw('YEAR(created_at) year, MONTH(created_at) month')
-        )->whereBetween('created_at', [$from, $to])->groupby('year', 'month')->get()->toArray();
-
-        for ($inc = 1; $inc <= 12; $inc++) {
-            $table_earning[$inc] = 0;
-            foreach ($table_earning_data as $match) {
-                if ($match['month'] == $inc) {
-                    $table_earning[$inc] = Helpers::set_price($match['sums']);
-                }
-            }
-        }
-
-        $pos_earning = [];
-        $pos_earning_data = Order::where([
-            'order_status' => 'delivered', 'order_type' => 'pos', 'branch_id' => auth('branch')->id()
-        ])
-            ->select(
-                DB::raw('IFNULL(sum(order_amount),0) as sums'),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month')
-            )->whereBetween('created_at', [$from, $to])->groupby('year', 'month')->get()->toArray();
-        for ($inc = 1; $inc <= 12; $inc++) {
-            $pos_earning[$inc] = 0;
-            foreach ($pos_earning_data as $match) {
-                if ($match['month'] == $inc) {
-                    $pos_earning[$inc] = Helpers::set_price($match['sums']);
-                }
-            }
-        }
-
-        return view('branch-views.dashboard', compact('data', 'earning', 'table_earning', 'pos_earning'));
+        return view('branch-views.dashboard', compact('data', 'earning'));
     }
 
     public function settings()
@@ -160,7 +127,7 @@ class DashboardController extends Controller
             })
             ->count();
 
-        $delivered = Order::where(['order_status'=>'delivered','branch_id'=>auth('branch')->id()])
+        $delivered = Order::where(['order_status'=>'delivered','branch_id'=>auth('branch')->id()])->notPos()
             ->when($today, function ($query) {
                 return $query->whereDate('created_at', Carbon::today());
             })
@@ -168,7 +135,7 @@ class DashboardController extends Controller
                 return $query->whereMonth('created_at', Carbon::now());
             })
             ->count();
-        $all = Order::where(['branch_id'=>auth('branch')->id()])
+        $all = Order::where(['branch_id'=>auth('branch')->id()])->notPos()
             ->when($today, function ($query) {
                 return $query->whereDate('created_at', Carbon::today());
             })

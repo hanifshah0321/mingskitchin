@@ -9,7 +9,7 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="mb-2">
+        <div class="page-header">
             <div class="row align-items-center mb-3">
                 <div class="col-sm">
                 <h1 class="page-header-title text-capitalize">{{translate('pos')}} {{translate('orders')}} <span
@@ -24,22 +24,22 @@
             <!-- Header -->
             <div class="card-header">
                 <div class="row justify-content-between align-items-center flex-grow-1">
-                    <div class="col-lg-6"></div>
-                    <div class="col-lg-4 mb-3 mb-lg-0">
-                        <div>
-                            <form action="{{url()->current()}}" method="GET">
-                                <div class="input-group">
-                                    <input id="datatableSearch_" type="search" name="search"
-                                           class="form-control"
-                                           placeholder="{{translate('Search')}}" aria-label="Search"
-                                           value="{{$search}}" required autocomplete="off">
-                                    <div class="input-group-append">
-                                        <button type="submit" class="input-group-text"><i class="tio-search"></i>
-                                        </button>
+                    <div class="col-lg-6 mb-3 mb-lg-0">
+                        <form action="{{url()->current()}}" method="GET">
+                            <!-- Search -->
+                            <div class="input-group input-group-merge input-group-flush">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="tio-search"></i>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+                                <input id="datatableSearch_" type="search" name="search" class="form-control"
+                                       placeholder="Search" aria-label="Search" value="{{$search}}" required>
+                                <button type="submit" class="btn btn-primary">{{translate('search')}}</button>
+
+                            </div>
+                            <!-- End Search -->
+                        </form>
                     </div>
 
                     <div class="col-lg-6"></div>
@@ -80,13 +80,11 @@
                             <td>{{date('d M Y',strtotime($order['created_at']))}}</td>
                             <td>
                                 @if($order->customer)
-                                <label class="badge badge-dark">{{$order->customer['f_name'].' '.$order->customer['l_name']}}</label>
-                                @elseif($order['user_id'] == null)
-                                    <label class="badge badge-success">{{translate('walk_in_customer')}}</label>
+                                <label
+                                        class="badge badge-dark">{{$order->customer['f_name'].' '.$order->customer['l_name']}}</label>
                                 @else
-                                    <span class="badge-pill badge-soft-dark text-muted text-sm small">
-                                        {{translate('Customer unavailable')}}
-                                    </span>
+                                    <label
+                                        class="badge badge-success">{{translate('walk_in_customer')}}</label>
                                 @endif
                             </td>
                             <td>
@@ -132,10 +130,6 @@
                                 @if($order['order_type']=='take_away')
                                     <span class="badge badge-soft-info ml-2 ml-sm-3">
                                         <span class="legend-indicator bg-info"></span>{{translate('take_away')}}
-                                    </span>
-                                    @elseif($order['order_type']=='pos')
-                                        <span class="badge badge-soft-info ml-2 ml-sm-3">
-                                        <span class="legend-indicator bg-info"></span>{{translate('POS')}}
                                     </span>
                                 @else
                                     <span class="badge badge-soft-success ml-2 ml-sm-3">
@@ -212,11 +206,11 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body row">
+                <div class="modal-body row" style="font-family: emoji;">
                     <div class="col-md-12">
                         <center>
                             <input type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea')"
-                                value="{{translate('Proceed, If thermal printer is ready.')}}"/>
+                                value="Proceed, If thermal printer is ready."/>
                             <a href="{{url()->previous()}}" class="btn btn-danger non-printable">{{translate('Back')}}</a>
                         </center>
                         <hr class="non-printable">

@@ -9,20 +9,21 @@
 
 @section('content')
     <div class="content container-fluid">
-        <div class="pb-3">
-            <div class="row align-items-center">
-                <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i
-                            class="tio-add-circle-outlined"></i> {{translate('add New Role')}}
-                    </h1>
-                </div>
-            </div>
-        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">{{translate('Dashboard')}}</a>
+                </li>
+                <li class="breadcrumb-item" aria-current="page">{{translate('custom_role')}}</li>
+            </ol>
+        </nav>
 
         <!-- Content Row -->
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
+                    <div class="card-header">
+                        {{translate('role_form')}}
+                    </div>
                     <div class="card-body">
                         <form id="submit-create-role" method="post" action="{{route('admin.custom-role.store')}}"
                               style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};">

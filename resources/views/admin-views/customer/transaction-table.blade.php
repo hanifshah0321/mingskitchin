@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-2">
+        <div class="page-header">
             <div class="row align-items-center mb-3">
                 <div class="col-sm flex-start">
-                    <h1 class="">{{translate('Point History')}}</h1>
+                    <h1 class="page-header-title">{{translate('Point History')}}</h1>
                     <h1 class="page-header-title text-primary mx-2">{{ $transition->total() }}</h1>
                 </div>
             </div>
@@ -31,6 +31,15 @@
                 <i class="tio-chevron-right"></i>
               </a>
             </span>
+
+                <!-- Nav -->
+                <ul class="nav nav-tabs page-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active"
+                           href="#">{{translate('Point History')}}</a>
+                    </li>
+
+                </ul>
                 <!-- End Nav -->
             </div>
             <!-- End Nav Scroller -->
@@ -82,15 +91,9 @@
                                 {{ $transition->firstitem()+$key }}
                             </td>
                             <td class="">
-                                @if($trans->customer)
-                                    <a href="{{route('admin.customer.view',[$trans->user_id])}}">
-                                        {{$trans->customer['f_name']." ".$trans->customer['l_name']}}
-                                    </a>
-                                @else
-                                    <span class="badge-pill badge-soft-dark text-muted text-sm small">
-                                        {{translate('Customer unavailable')}}
-                                    </span>
-                                @endif
+                                <a href="{{route('admin.customer.view',[$trans->user_id])}}">
+                                    {{$trans->customer['f_name']." ".$trans->customer['l_name']}}
+                                </a>
                             </td>
 
                             <td>

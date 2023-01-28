@@ -8,18 +8,13 @@ use App\Model\AddOn;
 use App\Model\Admin;
 use App\Model\Branch;
 use App\Model\Category;
-use App\Model\Notification;
 use App\Model\Product;
 use App\Model\Order;
 use App\Model\OrderDetail;
-use App\Model\Table;
-use App\Model\TableOrder;
-use App\User;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use function App\CentralLogics\translate;
 
 class POSController extends Controller
@@ -30,8 +25,6 @@ class POSController extends Controller
         $categories = Category::active()->get();
         $keyword = $request->keyword;
         $key = explode(' ', $keyword);
-        $selected_customer =User::where('id', session('customer_id'))->first();
-        $selected_table =Table::where('id', session('table_id'))->first();
 
         $products = Product::
         when($request->has('category_id') && $request['category_id'] != 0, function ($query) use ($request) {
@@ -47,7 +40,7 @@ class POSController extends Controller
 
         $current_branch = Admin::find(auth('admin')->id());
         $branches = Branch::select('id', 'name')->get();
-        return view('admin-views.pos.index', compact('categories', 'products', 'category', 'keyword', 'current_branch', 'branches', 'selected_customer', 'selected_table'));
+        return view('admin-views.pos.index', compact('categories', 'products', 'category', 'keyword', 'current_branch', 'branches'));
     }
 
     public function quick_view(Request $request)
@@ -62,9 +55,7 @@ class POSController extends Controller
 
     public function variant_price(Request $request)
     {
-        //dd($request->all());
         $product = Product::find($request->id);
-
         $str = '';
         $quantity = 0;
         $price = 0;
@@ -102,7 +93,6 @@ class POSController extends Controller
     {
         $key = explode(' ', $request['q']);
         $data = DB::table('users')
-            ->where(['user_type' => null])
             ->where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('f_name', 'like', "%{$value}%")
@@ -310,8 +300,6 @@ class POSController extends Controller
 
     public function place_order(Request $request)
     {
-        //dd($request->all());
-
         if ($request->session()->has('cart')) {
             if (count($request->session()->get('cart')) < 1) {
                 Toastr::error(translate('cart_empty_warning'));
@@ -319,11 +307,6 @@ class POSController extends Controller
             }
         } else {
             Toastr::error(translate('cart_empty_warning'));
-            return back();
-        }
-
-        if (session('people_number') != null && (session('people_number') > 99 || session('people_number') <1)){
-            Toastr::error(translate('enter valid people number'));
             return back();
         }
 
@@ -343,9 +326,9 @@ class POSController extends Controller
 
         $order->user_id = session()->get('customer_id') ?? null;
         $order->coupon_discount_title = $request->coupon_discount_title == 0 ? null : 'coupon_discount_title';
-        $order->payment_status = $request->type == 'pay_after_eating' ? 'unpaid' : 'paid';
-        $order->order_status = session()->get('table_id') ? 'confirmed' : 'delivered';
-        $order->order_type = session()->get('table_id') ? 'dine_in' : 'pos';
+        $order->payment_status = 'paid';
+        $order->order_status = 'delivered';
+        $order->order_type = 'pos';
         $order->coupon_code = $request->coupon_code ?? null;
         $order->payment_method = $request->type;
         $order->transaction_reference = $request->transaction_reference ?? null;
@@ -357,8 +340,6 @@ class POSController extends Controller
         $order->checked = 1;
         $order->created_at = now();
         $order->updated_at = now();
-
-        $total_product_main_price = 0;
 
         foreach ($cart as $c) {
             if (is_array($c)) {
@@ -372,34 +353,6 @@ class POSController extends Controller
 
                     $product = Helpers::product_data_formatting($product);
                     $addon_data = Helpers::calculate_addon_price(AddOn::whereIn('id', $c['add_ons'])->get(), $c['add_on_qtys']);
-
-                    //***bypass check for POS variation***
-                    $result = [];
-                    if(!empty($c['variations'])) {
-                        foreach (gettype($product['variations']) == 'array' ? $product['variations'] : json_decode($product['variations'], true) as $product_variation) {
-                            //Here 'Size' is coupled with POS order's variation architecture, think before you change
-                            if ($product_variation['type'] == current($c['variations']) || $product_variation['type'] == str_replace(" ","",current($c['variations']))) {
-                                $result[] = [
-                                    'type' => $product_variation['type'],
-                                    'price' => Helpers::set_price($product_variation['price'])
-                                ];
-                            }
-                        }
-                    }
-
-                    if(count($result) > 0) {
-                        $encoded_variation = json_encode($result);
-                    } else {
-                        $encoded_variation = json_encode([]);
-                    }
-                    //***end***
-
-                    //*** addon quantity integer casting ***
-                    array_walk($c['add_on_qtys'], function (&$add_on_qtys) {
-                        $add_on_qtys = (int) $add_on_qtys;
-                    });
-                    //***end***
-
                     $or_d = [
                         'product_id' => $c['id'],
                         'product_details' => $product,
@@ -409,7 +362,7 @@ class POSController extends Controller
                         'discount_on_product' => Helpers::discount_calculate($product, $price),
                         'discount_type' => 'discount_on_product',
                         'variant' => json_encode($c['variant']),
-                        'variation' => $encoded_variation,
+                        'variation' => json_encode(empty($c['variations']) ? [] : [$c['variations']]),
                         'add_on_ids' => json_encode($addon_data['addons']),
                         'add_on_qtys' => json_encode($c['add_on_qtys']),
                         'created_at' => now(),
@@ -418,7 +371,6 @@ class POSController extends Controller
                     $total_tax_amount += $or_d['tax_amount'] * $c['quantity'];
                     $total_addon_price += $addon_data['total_add_on_price'];
                     $product_price += $product_subtotal - $discount_on_product;
-                    $total_product_main_price += $product_subtotal;
                     $order_details[] = $or_d;
                 }
             }
@@ -426,7 +378,7 @@ class POSController extends Controller
 
         $total_price = $product_price + $total_addon_price;
         if (isset($cart['extra_discount'])) {
-            $extra_discount = $cart['extra_discount_type'] == 'percent' && $cart['extra_discount'] > 0 ? (($total_product_main_price * $cart['extra_discount']) / 100) : $cart['extra_discount'];
+            $extra_discount = $cart['extra_discount_type'] == 'percent' && $cart['extra_discount'] > 0 ? (($total_price * $cart['extra_discount']) / 100) : $cart['extra_discount'];
             $total_price -= $extra_discount;
         }
         $tax = isset($cart['tax']) ? $cart['tax'] : 0;
@@ -435,50 +387,23 @@ class POSController extends Controller
             $order->extra_discount = $extra_discount ?? 0;
             $order->total_tax_amount = $total_tax_amount;
             $order->order_amount = $total_price + $total_tax_amount + $order->delivery_charge;
+
             $order->coupon_discount_amount = 0.00;
-            $order->branch_id = session()->get('branch_id');
-            $order->table_id = session()->get('table_id');
-            $order->number_of_people = session()->get('people_number');
-
-            if(session('branch_id')){
-                $order->save();
-
-                foreach ($order_details as $key => $item) {
-                    $order_details[$key]['order_id'] = $order->id;
-                }
-                OrderDetail::insert($order_details);
-
-                session()->forget('cart');
-                session(['last_order' => $order->id]);
-                session()->forget('customer_id');
-                session()->forget('branch_id');
-                session()->forget('table_id');
-                session()->forget('people_number');
-
-                Toastr::success(translate('order_placed_successfully'));
-
-                //send notification to kitchen
-                if ($order->order_type == 'dine_in'){
-                    $notification = new Notification;
-                    $notification->title =  "You have a new order from POS - (Order Confirmed). ";
-                    $notification->description = $order->id;
-                    $notification->status = 1;
-
-                    try {
-                        Helpers::send_push_notif_to_topic($notification, "kitchen-{$order->branch_id}",'general');
-                        Toastr::success(translate('Notification sent successfully!'));
-                    } catch (\Exception $e) {
-                        Toastr::warning(translate('Push notification failed!'));
-                    }
-                }
-
-                return back();
+            $order->branch_id = session()->get('branch_id') ?? 1;
+            $order->save();
+            foreach ($order_details as $key => $item) {
+                $order_details[$key]['order_id'] = $order->id;
             }
+            OrderDetail::insert($order_details);
 
-            else{
-                Toastr::warning(translate('Branch select is required'));
-            }
+            session()->forget('cart');
+            session(['last_order' => $order->id]);
 
+            session()->forget('customer_id');
+            session()->forget('branch_id');
+
+            Toastr::success(translate('order_placed_successfully'));
+            return back();
         } catch (\Exception $e) {
             info($e);
         }
@@ -494,23 +419,5 @@ class POSController extends Controller
             'success' => 1,
             'view' => view('admin-views.pos.order.invoice', compact('order'))->render(),
         ]);
-    }
-
-    public function getTableListByBranch(Request $request)
-    {
-        $data = [
-            'tables' => Table::where(['is_active' => 1, 'branch_id' => $request->branch_id])->get(),
-        ];
-        return response()->json($data);
-    }
-
-    public function clear_session_data()
-    {
-        session()->forget('customer_id');
-        session()->forget('branch_id');
-        session()->forget('table_id');
-        session()->forget('people_number');
-        Toastr::success(translate('clear data successfully'));
-        return back();
     }
 }

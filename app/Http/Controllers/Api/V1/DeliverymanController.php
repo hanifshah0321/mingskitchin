@@ -49,7 +49,7 @@ class DeliverymanController extends Controller
                 ]
             ], 401);
         }
-        $orders = Order::with(['customer'])->whereIn('order_status', ['pending', 'processing', 'out_for_delivery', 'confirmed', 'done', 'cooking'])
+        $orders = Order::with(['customer'])->whereIn('order_status', ['pending', 'processing', 'out_for_delivery', 'confirmed'])
             ->where(['delivery_man_id' => $dm['id']])->get();
         return response()->json($orders, 200);
     }
@@ -173,8 +173,12 @@ class DeliverymanController extends Controller
             ], 401);
         }
         $order = Order::with(['details'])->where(['delivery_man_id' => $dm['id'], 'id' => $request['order_id']])->first();
-        $details = isset($order->details) ? Helpers::order_details_formatter($order->details) : null;
+        $details = $order->details;
         foreach ($details as $det) {
+            $det['add_on_ids'] = json_decode($det['add_on_ids']);
+            $det['add_on_qtys'] = json_decode($det['add_on_qtys']);
+            $det['variation'] = json_decode($det['variation']);
+            $det['product_details'] = Helpers::product_data_formatting(json_decode($det['product_details'], true));
             $det['delivery_time'] = $order->delivery_time;
             $det['delivery_date'] = $order->delivery_date;
             $det['preparation_time'] = $order->preparation_time;

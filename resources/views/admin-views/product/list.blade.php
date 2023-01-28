@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i
+                    <h1 class="page-header-title"><i
                             class="tio-filter-list"></i> {{translate('product')}} {{translate('list')}} <span class="text-primary">({{ $products->total() }})</span></h1>
                 </div>
             </div>
@@ -108,7 +108,7 @@
                                                 <a class="dropdown-item"
                                                    href="{{route('admin.product.edit',[$product['id']])}}">{{translate('edit')}}</a>
                                                 <a class="dropdown-item" href="javascript:"
-                                                   onclick="form_alert('product-{{$product['id']}}','{{translate('Want to delete this item ?')}}')">{{translate('delete')}}</a>
+                                                   onclick="form_alert('product-{{$product['id']}}','Want to delete this item ?')">{{translate('delete')}}</a>
                                                 <form action="{{route('admin.product.delete',[$product['id']])}}"
                                                       method="post" id="product-{{$product['id']}}">
                                                     @csrf @method('delete')

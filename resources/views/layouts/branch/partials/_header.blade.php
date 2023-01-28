@@ -89,21 +89,18 @@
                                 <div class="dropdown-divider"></div>
 
                                 <a class="dropdown-item" href="javascript:" onclick="Swal.fire({
-                                    title: '{{translate('Do you want to logout ?')}}',
+                                    title: 'Do you want to logout?',
                                     showDenyButton: true,
                                     showCancelButton: true,
                                     confirmButtonColor: '#FC6A57',
                                     cancelButtonColor: '#363636',
-                                    confirmButtonText: `{{translate('Yes')}}`,
-                                    cancelButtonText: `{{translate('No')}}`,
+                                    confirmButtonText: `Yes`,
+                                    denyButtonText: `Don't Logout`,
                                     }).then((result) => {
                                     if (result.value) {
                                     location.href='{{route('branch.auth.logout')}}';
                                     } else{
-                                        Swal.fire({
-                                        title: '{{translate("Canceled")}}',
-                                        confirmButtonText: '{{translate("Okay")}}',
-                                        })
+                                    Swal.fire('Canceled', '', 'info')
                                     }
                                     })">
                                     <span class="text-truncate pr-2" title="Sign out">{{translate('sign_out')}}</span>

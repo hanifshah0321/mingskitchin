@@ -96,7 +96,7 @@
         $extra_discount = session()->get('cart')['extra_discount'] ?? 0;
         $extra_discount_type = session()->get('cart')['extra_discount_type'] ?? 'amount';
         if($extra_discount_type == 'percent' && $extra_discount > 0){
-            $extra_discount = ($subtotal * $extra_discount) / 100;
+            $extra_discount =  (($total+$total_tax)*$extra_discount) / 100;
         }
         if($extra_discount) {
             $total -= $extra_discount;
@@ -212,30 +212,15 @@
                     <form action="{{route('admin.pos.order')}}" id='order_place' method="post" class="row">
                         @csrf
                         <div class="form-group col-12">
-                            <label class="input-label" for="">{{translate('amount')}}({{\App\CentralLogics\Helpers::currency_symbol()}})</label>
+                            <label class="input-label" for="">amount({{\App\CentralLogics\Helpers::currency_symbol()}})</label>
                             <input type="number" class="form-control" name="amount" min="0" step="0.01" value="{{ Helpers::set_price(round($total+$total_tax, 2)) }}" disabled>
                         </div>
                         <div class="form-group col-12">
                             <label class="input-label" for="">{{translate('type')}}</label>
-<!--                            <select name="type" class="form-control">
+                            <select name="type" class="form-control">
                                 <option value="cash">{{translate('cash')}}</option>
                                 <option value="card">{{translate('card')}}</option>
-                                <option value="pay_after_eating">{{translate('Pay After Eating')}}</option>
-                            </select>-->
-
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="type" id="cash" value="cash" checked>
-                                <label class="form-check-label" for="cash">{{ translate('cash') }}</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="type" id="card" value="card">
-                                <label class="form-check-label" for="card">{{ translate('card') }}</label>
-                            </div>
-                            <div class="form-check form-check-inline {{ session('table_id') ?  '' : 'd-none' }}" id="pay_after_eating">
-                                <input class="form-check-input" type="radio" name="type" id="pay_after_eating" value="pay_after_eating">
-                                <label class="form-check-label" for="pay_after_eating">{{ translate('pay after eating') }}</label>
-                            </div>
-
+                            </select>
                         </div>
                         <div class="form-group col-12">
                             <button class="btn btn-sm btn-primary" type="submit">{{translate('submit')}}</button>

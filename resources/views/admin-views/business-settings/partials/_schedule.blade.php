@@ -43,7 +43,7 @@
     </div>
 
     <div class="my-2 p-1 border rounded">
-        <span class="btn btn-dark">{{translate('thursday')}} :</span>
+        <span class="btn btn-dark">{{translate('thirsday')}} :</span>
         @if(isset($data['4']) && count($data['4']))
             @foreach ($data['4'] as $day)
                 <span class="btn btn-sm btn-outline-dark m-1 disabled">{{date(config('time_format'), strtotime($day['start_time']))}} - {{date(config('time_format'), strtotime($day['end_time']))}} <span class="badge badge-danger rounded-circle cursor-pointer" onclick="delete_schedule('{{route('admin.business-settings.restaurant.time_schedule_remove',['schedule_id'=>$day['id']])}}')">X</span></span>

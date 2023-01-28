@@ -9,11 +9,11 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0 row">
                     <div class="col-12 col-sm-6">
-                        <h1 class=""><i class="tio-filter-list"></i> {{translate('deliveryman')}} {{translate('list')}}</h1>
+                        <h1 class="page-header-title"><i class="tio-filter-list"></i> {{translate('deliveryman')}} {{translate('list')}}</h1>
                     </div>
 {{--                    <div class="col-0 col-sm-4 col-md-6"></div>--}}
                     <div class="col-12 col-sm-6 text-sm-right text-left">
@@ -83,12 +83,11 @@
                                         {{--<span class="d-block font-size-sm">{{$banner['image']}}</span>--}}
                                     </td>
                                     <td>
-                                        {{$dm['email']}}
-                                    </td>
-                                    <td>
                                         {{$dm['phone']}}
                                     </td>
-
+                                    <td>
+                                        {{$dm['email']}}
+                                    </td>
                                     <td>
                                         <!-- Dropdown -->
                                         <div class="dropdown">
@@ -101,7 +100,7 @@
                                                 <a class="dropdown-item"
                                                    href="{{route('admin.delivery-man.edit',[$dm['id']])}}">{{translate('edit')}}</a>
                                                 <a class="dropdown-item" href="javascript:"
-                                                   onclick="form_alert('delivery-man-{{$dm['id']}}','{{translate('Want to remove this information ?')}}')">{{translate('delete')}}</a>
+                                                   onclick="form_alert('delivery-man-{{$dm['id']}}','Want to remove this information ?')">{{translate('delete')}}</a>
                                                 <form action="{{route('admin.delivery-man.delete',[$dm['id']])}}"
                                                       method="post" id="delivery-man-{{$dm['id']}}">
                                                     @csrf @method('delete')

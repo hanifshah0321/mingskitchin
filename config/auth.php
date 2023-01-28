@@ -60,11 +60,6 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
-
-        'kitchen_api' => [
-            'driver' => 'passport',
-            'provider' => 'kitchen',
-        ],
     ],
 
     /*
@@ -108,11 +103,6 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
-
-        'kitchen' => [
-            'driver' => 'eloquent',
-            'model' => App\User::class,
-        ],
     ],
 
     /*

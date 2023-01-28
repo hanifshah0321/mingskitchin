@@ -121,7 +121,6 @@ class ProductController extends Controller
             'price' => 'required|numeric',
         ], [
             'name.required' => translate('Product name is required!'),
-            'name.unique' => translate('Product name has been taken.'),
             'category_id.required' => translate('category  is required!'),
         ]);
 
@@ -222,7 +221,6 @@ class ProductController extends Controller
         $product->variations = json_encode($variations);
         $product->price = $request->price;
         $product->set_menu = $request->item_type;
-        $product->product_type = $request->product_type;
         $product->image = Helpers::upload('product/', 'png', $request->file('image'));
         $product->available_time_starts = $request->available_time_starts;
         $product->available_time_ends = $request->available_time_ends;
@@ -286,7 +284,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:products,name,' . $id,
+            'name' => 'required',
             'category_id' => 'required',
             'price' => 'required|numeric',
         ], [
@@ -380,7 +378,6 @@ class ProductController extends Controller
         $product->variations = json_encode($variations);
         $product->price = $request->price;
         $product->set_menu = $request->item_type;
-        $product->product_type = $request->product_type;
         $product->image = $request->has('image') ? Helpers::update('product/', $product->image, 'png', $request->file('image')) : $product->image;
         $product->available_time_starts = $request->available_time_starts;
         $product->available_time_ends = $request->available_time_ends;
@@ -443,19 +440,6 @@ class ProductController extends Controller
             return back();
         }
 
-        //check
-        $field_array = ['name', 'description', 'price', 'tax', 'category_id', 'sub_category_id', 'discount', 'discount_type', 'tax_type', 'set_menu', 'available_time_starts', 'available_time_ends', 'product_type'];
-        if(count($collections) < 1) {
-            Toastr::error(translate('At least one product have to import.'));
-            return back();
-        }
-        foreach ($field_array as $field) {
-            if(!array_key_exists($field, $collections->first())) {
-                Toastr::error(translate($field) . translate(' must not be empty.'));
-                return back();
-            }
-        }
-
         $data = [];
         foreach ($collections as $key => $collection) {
             if ($collection['name'] === "") {
@@ -496,11 +480,6 @@ class ProductController extends Controller
             }
             if ($collection['set_menu'] === "") {
                 Toastr::error(translate('Please fill set_menu field of row') . ' ' . ($key + 2));
-                return back();
-            }
-
-            if ($collection['product_type'] === "") {
-                Toastr::error(translate('Please fill product_type field of row') . ' ' . ($key + 2));
                 return back();
             }
 
@@ -562,7 +541,6 @@ class ProductController extends Controller
                 'discount_type' => $collection['discount_type'],
                 'tax_type' => $collection['tax_type'],
                 'set_menu' => $collection['set_menu'],
-                'product_type' => $collection['product_type'],
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
@@ -610,7 +588,6 @@ class ProductController extends Controller
                 'discount_type' => $item->discount_type,
                 'tax_type' => $item->tax_type,
                 'set_menu' => $item->set_menu,
-                'product_type' => $item->product_type,
             ]);
         }
         return (new FastExcel($storage))->download('products.xlsx');
