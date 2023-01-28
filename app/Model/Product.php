@@ -16,8 +16,7 @@ class Product extends Model
         'discount' => 'float',
         'set_menu' => 'integer',
         'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'product_type' => 'string'
+        'updated_at' => 'datetime'
     ];
 
     public function getPriceAttribute($price)
@@ -38,15 +37,6 @@ class Product extends Model
     public function scopeActive($query)
     {
         return $query->where('status', '=', 1);
-    }
-
-    public function scopeProductType($query, $type)
-    {
-        if($type == 'veg') {
-            return $query->where('product_type', 'veg');
-        } elseif($type == 'non_veg') {
-            return $query->where('product_type', 'non_veg');
-        }
     }
 
     public function reviews()

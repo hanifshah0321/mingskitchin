@@ -82,7 +82,7 @@ class AddonController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|unique:add_ons,name,' . $id,
+            'name' => 'required',
         ]);
 
         foreach ($request->name as $name) {

@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class="">{{translate('review')}} {{translate('list')}}
+                    <h1 class="page-header-title">{{translate('review')}} {{translate('list')}}
                         <span class="badge badge-soft-dark ml-2">{{$reviews->total()}}</span></h1>
                 </div>
             </div>
@@ -60,15 +60,9 @@
                                         </span>
                                     </td>
                                     <td>
-                                        @if($review->customer)
-                                            <a href="{{route('admin.customer.view',[$review->user_id])}}">
-                                                {{$review->customer->f_name." ".$review->customer->l_name}}
-                                            </a>
-                                        @else
-                                            <span class="badge-pill badge-soft-dark text-muted text-sm small">
-                                                {{translate('Customer unavailable')}}
-                                            </span>
-                                        @endif
+                                        <a href="{{route('admin.customer.view',[$review->user_id])}}">
+                                            {{$review->customer->f_name." ".$review->customer->l_name}}
+                                        </a>
                                     </td>
                                     <td>
                                         {{$review->comment}}

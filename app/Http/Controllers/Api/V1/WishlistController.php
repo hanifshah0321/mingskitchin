@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\CentralLogics\Helpers;
-use App\CentralLogics\ProductLogic;
 use App\Http\Controllers\Controller;
-use App\Model\Product;
 use App\Model\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -32,7 +30,7 @@ class WishlistController extends Controller
             return response()->json(['message' => translate('added_success')], 200);
         }
 
-        return response()->json(['message' => translate('already_added')], 200);
+        return response()->json(['message' => translate('already_added')], 409);
     }
 
     public function remove_from_wishlist(Request $request)
@@ -57,11 +55,6 @@ class WishlistController extends Controller
 
     public function wish_list(Request $request)
     {
-        $limit = $request->has('limit') ? $request->limit : 10;
-        $offset = $request->has('offset') ? $request->offset : 1;
-
-        $products = ProductLogic::get_wishlished_products($limit, $offset, $request);
-        $products['products'] = Helpers::product_data_formatting($products['products'], true);
-        return response()->json($products, 200);
+        return response()->json(Wishlist::where('user_id', $request->user()->id)->get(), 200);
     }
 }

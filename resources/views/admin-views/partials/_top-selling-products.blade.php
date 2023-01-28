@@ -16,7 +16,7 @@
                      onclick="location.href='{{route('admin.product.view',[$item['product_id']])}}'"
                      style="cursor: pointer;padding-right: 6px;padding-left: 6px">
                     <div class="grid-card">
-                        <label class="label_1">{{translate('Sold :')}}{{$item['count']}}</label>
+                        <label class="label_1">Sold : {{$item['count']}}</label>
                         <center class="mt-4">
                             <img style="height: 90px"
                                  src="{{ asset('storage/app/public/product').'/'.$item->product->image  ?? '' }}"

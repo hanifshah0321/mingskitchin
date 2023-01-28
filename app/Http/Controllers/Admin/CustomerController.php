@@ -12,7 +12,6 @@ use App\User;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\JsonResponse;
 
 class CustomerController extends Controller
 {
@@ -62,7 +61,7 @@ class CustomerController extends Controller
             $customers = new User();
         }
 
-        $customers = $customers->with(['orders'])->where('user_type', null)->latest()->paginate(Helpers::getPagination())->appends($query_param);
+        $customers = $customers->with(['orders'])->latest()->paginate(Helpers::getPagination())->appends($query_param);
         return view('admin-views.customer.list', compact('customers', 'search'));
     }
 
@@ -231,7 +230,4 @@ class CustomerController extends Controller
         }
         return response()->json(['image_urls' => $images], 200);
     }
-
-
-
 }

@@ -115,15 +115,15 @@
                                 <label for="firstNameLabel" class="col-sm-3 col-form-label input-label">{{translate('Full name')}} <i
                                         class="tio-help-outlined text-body ml-1" data-toggle="tooltip"
                                         data-placement="top"
-                                        title="{{translate('Display name')}}"></i></label>
+                                        title="Display name"></i></label>
 
                                 <div class="col-sm-9">
                                     <div class="input-group input-group-sm-down-break">
                                         <input type="text" class="form-control" name="f_name" id="firstNameLabel"
-                                               placeholder="{{translate('Your first name')}}" aria-label="Your first name"
+                                               placeholder="Your first name" aria-label="Your first name"
                                                value="{{auth('admin')->user()->f_name}}">
                                         <input type="text" class="form-control" name="l_name" id="lastNameLabel"
-                                               placeholder="{{translate('Your last name')}}" aria-label="Your last name"
+                                               placeholder="Your last name" aria-label="Your last name"
                                                value="{{auth('admin')->user()->l_name}}">
                                     </div>
                                 </div>
@@ -157,7 +157,7 @@
                             </div>
 
                             <div class="d-flex justify-content-end">
-                                <button type="button" onclick="{{env('APP_MODE')!='demo'?"form_alert('admin-settings-form','".translate("Want to update admin info ?")."')":"call_demo()"}}" class="btn btn-primary">{{ translate('Save changes') }}</button>
+                                <button type="button" onclick="{{env('APP_MODE')!='demo'?"form_alert('admin-settings-form','Want to update admin info ?')":"call_demo()"}}" class="btn btn-primary">Save changes</button>
                             </div>
 
                             <!-- End Form -->
@@ -186,7 +186,7 @@
 
                                 <div class="col-sm-9">
                                     <input type="password" class="js-pwstrength form-control" name="password"
-                                           id="newPassword" placeholder="{{translate('Enter new password')}}"
+                                           id="newPassword" placeholder="Enter new password"
                                            aria-label="Enter new password"
                                            data-hs-pwstrength-options='{
                                            "ui": {
@@ -220,7 +220,7 @@
                             <!-- End Form Group -->
 
                             <div class="d-flex justify-content-end">
-                                <button type="button" onclick="{{env('APP_MODE')!='demo'?"form_alert('changePasswordForm','".translate("Want to update admin info ?")."')":"call_demo()"}}" class="btn btn-primary">{{ translate('Save changes') }}</button>
+                                <button type="button" onclick="{{env('APP_MODE')!='demo'?"form_alert('changePasswordForm','Want to update admin password ?')":"call_demo()"}}" class="btn btn-primary">Save Changes</button>
                             </div>
                         </form>
                         <!-- End Form -->

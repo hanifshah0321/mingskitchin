@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
 use App\Model\Branch;
-use App\Model\BranchPromotion;
 use App\Model\BusinessSetting;
 use App\Model\Currency;
 use App\Model\SocialMedia;
@@ -21,19 +20,15 @@ class ConfigController extends Controller
 
         $dm_config = Helpers::get_business_settings('delivery_management');
         $delivery_management = array(
-            "status" => (int)$dm_config['status'],
-            "min_shipping_charge" => (float)$dm_config['min_shipping_charge'],
-            "shipping_per_km" => (float)$dm_config['shipping_per_km'],
+            "status" => (int) $dm_config['status'],
+            "min_shipping_charge" => (float) $dm_config['min_shipping_charge'],
+            "shipping_per_km" => (float) $dm_config['shipping_per_km'],
         );
         $play_store_config = Helpers::get_business_settings('play_store_config');
         $app_store_config = Helpers::get_business_settings('app_store_config');
 
         //schedule time
         $schedules = TimeSchedule::select('day', 'opening_time', 'closing_time')->get();
-
-        $branch_promotion = Branch::with('branch_promotion')
-            ->where(['branch_promotion_status' => 1])
-            ->get();
 
         return response()->json([
             'restaurant_name' => BusinessSetting::where(['key' => 'restaurant_name'])->first()->value,
@@ -57,11 +52,9 @@ class ConfigController extends Controller
                 'restaurant_image_url' => asset('storage/app/public/restaurant'),
                 'delivery_man_image_url' => asset('storage/app/public/delivery-man'),
                 'chat_image_url' => asset('storage/app/public/conversation'),
-                'promotional_url' => asset('storage/app/public/promotion'),
-                'kitchen_image_url' => asset('storage/app/public/kitchen'),
             ],
             'currency_symbol' => $currency_symbol,
-            'delivery_charge' => (float)BusinessSetting::where(['key' => 'delivery_charge'])->first()->value,
+            'delivery_charge' => (float) BusinessSetting::where(['key' => 'delivery_charge'])->first()->value,
             'delivery_management' => $delivery_management,
             'cash_on_delivery' => $cod['status'] == 1 ? 'true' : 'false',
             'digital_payment' => $dp['status'] == 1 ? 'true' : 'false',
@@ -80,22 +73,21 @@ class ConfigController extends Controller
             'self_pickup' => (boolean)Helpers::get_business_settings('self_pickup') ?? 1,
             'delivery' => (boolean)Helpers::get_business_settings('delivery') ?? 1,
             'play_store_config' => [
-                "status" => isset($play_store_config) ? (boolean)$play_store_config['status'] : false,
-                "link" => isset($play_store_config) ? $play_store_config['link'] : null,
-                "min_version" => isset($play_store_config) && array_key_exists('min_version', $app_store_config) ? $play_store_config['min_version'] : null
+                "status"=> isset($play_store_config) ? (boolean) $play_store_config['status'] : false,
+                "link"=> isset($play_store_config) ? $play_store_config['link'] : null,
+                "min_version"=> isset($play_store_config) && array_key_exists('min_version', $app_store_config) ? $play_store_config['min_version'] : null
             ],
             'app_store_config' => [
-                "status" => isset($app_store_config) ? (boolean)$app_store_config['status'] : false,
-                "link" => isset($app_store_config) ? $app_store_config['link'] : null,
-                "min_version" => isset($app_store_config) && array_key_exists('min_version', $app_store_config) ? $app_store_config['min_version'] : null
+                "status"=> isset($app_store_config) ? (boolean) $app_store_config['status'] : false,
+                "link"=> isset($app_store_config) ? $app_store_config['link'] : null,
+                "min_version"=> isset($app_store_config) && array_key_exists('min_version', $app_store_config) ? $app_store_config['min_version'] : null
             ],
             'social_media_link' => SocialMedia::orderBy('id', 'desc')->active()->get(),
-            'software_version' => (string)env('SOFTWARE_VERSION') ?? null,
+            'software_version' => (string)env('SOFTWARE_VERSION')??null,
             'footer_text' => Helpers::get_business_settings('footer_text'),
             'decimal_point_settings' => (int)(Helpers::get_business_settings('decimal_point_settings') ?? 2),
             'schedule_order_slot_duration' => (int)(Helpers::get_business_settings('schedule_order_slot_duration') ?? 30),
             'time_format' => (string)(Helpers::get_business_settings('time_format') ?? '12'),
-            'promotion_campaign' => $branch_promotion
-        ], 200);
+        ]);
     }
 }

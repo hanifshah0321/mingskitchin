@@ -209,7 +209,7 @@
                 language: {
                     zeroRecords: '<div class="text-center p-4">' +
                         '<img class="mb-3" src="{{asset('public/assets/admin')}}/svg/illustrations/sorry.svg" alt="Image Description" style="width: 7rem;">' +
-                        '<p class="mb-0">{{translate('No data to show')}}</p>' +
+                        '<p class="mb-0">No data to show</p>' +
                         '</div>'
                 }
             });
@@ -257,7 +257,7 @@
                 if (fr > to) {
                     $('#from_date').val('');
                     $('#to_date').val('');
-                    toastr.error('{{translate('Invalid date range!')}}', Error, {
+                    toastr.error('Invalid date range!', Error, {
                         CloseButton: true,
                         ProgressBar: true
                     });

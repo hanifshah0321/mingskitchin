@@ -57,7 +57,7 @@
         <a class="d-flex justify-content-center mb-5" href="javascript:">
             <img class="z-index-2"
                  onerror="this.src='{{asset('public/assets/admin/img/160x160/img2.jpg')}}'"
-                 src="{{asset('storage/app/public/restaurant')}}/{{\App\Model\BusinessSetting::where(['key'=>'logo'])->first()->value??''}}" alt="Image Description" style="height: 100px;">
+                 src="{{asset('storage/app/public/restaurant')}}/{{\App\Model\BusinessSetting::where(['key'=>'logo'])->first()->value}}" alt="Image Description" style="height: 100px;">
         </a>
 
         <div class="row justify-content-center">

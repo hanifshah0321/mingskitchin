@@ -8,7 +8,6 @@ use App\Model\BusinessSetting;
 use App\Model\Currency;
 use App\Model\DMReview;
 use App\Model\Order;
-use App\Model\Product;
 use App\Model\Review;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
@@ -60,10 +59,8 @@ class Helpers
     public static function product_data_formatting($data, $multi_data = false)
     {
         $storage = [];
-
         if ($multi_data == true) {
             foreach ($data as $item) {
-
                 $variations = [];
                 $item['category_ids'] = json_decode($item['category_ids']);
                 $item['attributes'] = json_decode($item['attributes']);
@@ -92,26 +89,12 @@ class Helpers
             }
             $data = $storage;
         } else {
-            $data_addons = $data['add_ons'];
-            $addon_ids = [];
-            if(gettype($data_addons) != 'array') {
-                $addon_ids = json_decode($data_addons);
-
-            } elseif(gettype($data_addons) == 'array' && isset($data_addons[0]['id'])) {
-                foreach($data_addons as $addon) {
-                    $addon_ids[] = $addon['id'];
-                }
-
-            } else {
-                $addon_ids = $data_addons;
-            }
-
             $variations = [];
-            $data['category_ids'] = gettype($data['category_ids']) != 'array' ? json_decode($data['category_ids']) : $data['category_ids'];
-            $data['attributes'] = gettype($data['attributes']) != 'array' ? json_decode($data['attributes']) : $data['attributes'];
-            $data['choice_options'] = gettype($data['choice_options']) != 'array' ? json_decode($data['choice_options']) : $data['choice_options'];
-            $data['add_ons'] = AddOn::whereIn('id', $addon_ids)->get();
-            foreach (gettype($data['variations']) != 'array' ? json_decode($data['variations'], true) : $data['variations'] as $var) {
+            $data['category_ids'] = json_decode($data['category_ids']);
+            $data['attributes'] = json_decode($data['attributes']);
+            $data['choice_options'] = json_decode($data['choice_options']);
+            $data['add_ons'] = AddOn::whereIn('id', json_decode($data['add_ons']))->get();
+            foreach (json_decode($data['variations'], true) as $var) {
                 array_push($variations, [
                     'type' => $var['type'],
                     'price' => (double)$var['price']
@@ -144,21 +127,6 @@ class Helpers
             $data = $storage;
         } else {
             $data['add_on_ids'] = json_decode($data['add_on_ids']);
-
-            foreach ($data->details as $detail) {
-                $detail->product_details = gettype($detail->product_details) != 'array' ? json_decode($detail->product_details) : $detail->product_details;
-
-                $detail->product_details->add_ons = gettype($detail->product_details->add_ons) != 'array' ? json_decode($detail->product_details->add_ons) : $detail->product_details->add_ons;
-                $detail->product_details->variations = gettype($detail->product_details->variations) != 'array' ? json_decode($detail->product_details->variations) : $detail->product_details->variations;
-                $detail->product_details->attributes = gettype($detail->product_details->attributes) != 'array' ? json_decode($detail->product_details->attributes) : $detail->product_details->attributes;
-                $detail->product_details->category_ids = gettype($detail->product_details->category_ids) != 'array' ? json_decode($detail->product_details->category_ids) : $detail->product_details->category_ids;
-                $detail->product_details->choice_options = gettype($detail->product_details->choice_options) != 'array' ? json_decode($detail->product_details->choice_options) : $detail->product_details->choice_options;
-
-                $detail->variation = gettype($detail->variation) != 'array' ? json_decode($detail->variation) : $detail->variation;
-                $detail->add_on_ids = gettype($detail->add_on_ids) != 'array' ? json_decode($detail->add_on_ids) : $detail->add_on_ids;
-                $detail->variant = gettype($detail->variant) != 'array' ? json_decode($detail->variant) : $detail->variant;
-                $detail->add_on_qtys = gettype($detail->add_on_qtys) != 'array' ? json_decode($detail->add_on_qtys) : $detail->add_on_qtys;
-            }
         }
 
         return $data;
@@ -302,8 +270,7 @@ class Helpers
                     "body" : "' . $data['description'] . '",
                     "image" : "' . $data['image'] . '",
                     "is_read": 0,
-                    "type":"' . $type . '",
-
+                    "type":"' . $type . '"
                 },
                 "notification" : {
                     "title":"' . $data['title'] . '",
@@ -831,7 +798,7 @@ class Helpers
 
     public static function module_permission_check($mod_name)
     {
-        $permission = auth('admin')->user()->role->module_access??null;
+        $permission = auth('admin')->user()->role->module_access;
         if (isset($permission) && in_array($mod_name, (array)json_decode($permission)) == true) {
             return true;
         }
@@ -841,71 +808,6 @@ class Helpers
         }
         return false;
     }
-
-    public static function file_remover(string $dir, $image)
-    {
-        if (!isset($image)) return true;
-
-        if (Storage::disk('public')->exists($dir . $image)) Storage::disk('public')->delete($dir . $image);
-
-        return true;
-    }
-
-    public static function order_details_formatter($details)
-    {
-        if ($details->count() > 0) {
-            foreach ($details as $detail) {
-                $detail['product_details'] = gettype($detail['product_details']) != 'array' ? (array) json_decode($detail['product_details'], true) : (array) $detail['product_details'];
-                $detail['variation'] = gettype($detail['variation']) != 'array' ? (array) json_decode($detail['variation'], true) : (array) $detail['variation'];
-                $detail['add_on_ids'] = gettype($detail['add_on_ids']) != 'array' ? (array) json_decode($detail['add_on_ids'], true) : (array) $detail['add_on_ids'];
-                $detail['variant'] = gettype($detail['variant']) != 'array' ? (array) json_decode($detail['variant'], true) : (array) $detail['variant'];
-                $detail['add_on_qtys'] = gettype($detail['add_on_qtys']) != 'array' ? (array) json_decode($detail['add_on_qtys'], true) : (array) $detail['add_on_qtys'];
-
-                if(count($detail->variation) > 0) {
-                    $detail['variation'] = $detail->variation[0] ?? null; //first element is given, since variation can't be multiple
-                } else {
-                    $detail['variation'] = null;
-                }
-
-                if(!isset($detail['reviews_count'])) {
-                    $detail['review_count'] = Review::where(['order_id' => $detail['order_id'], 'product_id' => $detail['product_id']])->count();
-                }
-
-                $detail['product_details'] = Helpers::product_formatter($detail['product_details']);
-
-                $product_availability = Product::where('id', $detail['product_id'])->first();
-                $detail['is_product_available'] = isset($product_availability) ? 1 : 0;
-            }
-        }
-
-        return $details;
-    }
-
-    public static function product_formatter($product)
-    {
-        $product['variations'] = gettype($product['variations']) != 'array' ? (array)json_decode($product['variations'], true) : (array)$product['variations'];
-        $product['add_ons'] = gettype($product['add_ons']) != 'array' ? (array)json_decode($product['add_ons'], true) : (array)$product['add_ons'];
-        $product['attributes'] = gettype($product['attributes']) != 'array' ? (array)json_decode($product['attributes'], true) : (array)$product['attributes'];
-        $product['category_ids'] = gettype($product['category_ids']) != 'array' ? (array)json_decode($product['category_ids'], true) : (array)$product['category_ids'];
-        $product['choice_options'] = gettype($product['choice_options']) != 'array' ? (array)json_decode($product['choice_options'], true) : (array)$product['choice_options'];
-
-        try {
-            $addons = [];
-            foreach ($product['add_ons'] as $add_on_id) {
-                $addon = AddOn::find($add_on_id);
-                if (isset($addon)) {
-                    $addons [] = $addon;
-                }
-            }
-            $product['add_ons'] = $addons;
-
-        } catch (\Exception $exception) {
-            //
-        }
-
-        return $product;
-    }
-
 }
 
 function translate($key)

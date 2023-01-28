@@ -166,4 +166,122 @@ class PaypalPaymentController extends Controller
             return \redirect()->route('payment-fail', ['token' => base64_encode($token_string)]);
         }
     }
+
+
+
+
+
+
+
+    public function planpayWithpaypal($customer_id, $order_amount, $membership_id)
+    {
+        $order_amount = $order_amount;
+        $customer = User::find($customer_id);
+        $callback = "";
+
+
+        $tr_ref = Str::random(6) . '-' . rand(1, 1000);
+
+        $payer = new Payer();
+        $payer->setPaymentMethod('paypal');
+
+        $items_array = [];
+        $item = new Item();
+        $item->setName($customer['f_name'])
+            ->setCurrency(Helpers::currency_code())
+            ->setQuantity(1)
+            ->setPrice($order_amount);
+        array_push($items_array, $item);
+
+        $item_list = new ItemList();
+        $item_list->setItems($items_array);
+
+        $amount = new Amount();
+        $amount->setCurrency(Helpers::currency_code())
+            ->setTotal($order_amount);
+
+        \session()->put('transaction_reference', $tr_ref);
+        $transaction = new Transaction();
+        $transaction->setAmount($amount)
+            ->setItemList($item_list)
+            ->setDescription($tr_ref);
+
+
+
+        $redirect_urls = new RedirectUrls();
+        $redirect_urls->setReturnUrl(URL::route('plan-paypal-status', ['callback' => $callback, 'transaction_reference' => $tr_ref]))
+            ->setCancelUrl(URL::route('payment-fail', ['callback' => $callback, 'transaction_reference' => $tr_ref]));
+
+        $payment = new Payment();
+        $payment->setIntent('Sale')
+            ->setPayer($payer)
+            ->setRedirectUrls($redirect_urls)
+            ->setTransactions(array($transaction));
+        try {
+            $payment->create($this->_api_context);
+
+            foreach ($payment->getLinks() as $link) {
+                if ($link->getRel() == 'approval_url') {
+                    $redirect_url = $link->getHref();
+                    break;
+                }
+            }
+
+            Session::put('paypal_payment_id', $payment->getId());
+            if (isset($redirect_url)) {
+                return Redirect::away($redirect_url);
+            }
+
+        } catch (\Exception $ex) {
+            Toastr::error('Your currency is not supported by PAYPAL.');
+            return back()->withErrors(['error' => 'Failed']);
+        }
+
+        Session::put('error', 'Configure your paypal account.');
+        return back()->withErrors(['error' => 'Failed']);
+    }
+
+
+
+     public function plangetPaymentStatus(Request $request)
+    {
+        $callback = $request['callback'];
+        $transaction_reference = $request['transaction_reference'];
+
+        $payment_id = Session::get('paypal_payment_id');
+        if (empty($request['PayerID']) || empty($request['token'])) {
+            Session::put('error', 'Payment failed');
+            return Redirect::back();
+        }
+
+        $payment = Payment::get($payment_id, $this->_api_context);
+        $execution = new PaymentExecution();
+        $execution->setPayerId($request['PayerID']);
+
+        /**Execute the payment **/
+        $result = $payment->execute($execution, $this->_api_context);
+
+        //token string generate
+        $transaction_reference = $payment_id;
+        $token_string = 'payment_method=paypal&&transaction_reference=' . $transaction_reference;
+
+        if ($result->getState() == 'approved') {
+            //success
+            if ($callback != null) {
+                return redirect($callback . '/success' . '?token=' . base64_encode($token_string));
+            } else {
+                return \redirect()->route('payment-success', ['token' => base64_encode($token_string)]);
+            }
+        }
+
+        //fail
+        if ($callback != null) {
+            return redirect($callback . '/fail' . '?token=' . base64_encode($token_string));
+        } else {
+            return \redirect()->route('payment-fail', ['token' => base64_encode($token_string)]);
+        }
+    }
+
+
+
 }

@@ -4,7 +4,7 @@ use App\CentralLogics\Helpers;
 use Illuminate\Support\Facades\App;
 
 if(!function_exists('translate')) {
-    function  translate($key)
+    function translate($key)
     {
         $local = session()->has('local') ? session('local') : 'en';
         App::setLocale($local);

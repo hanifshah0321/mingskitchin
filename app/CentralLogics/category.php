@@ -17,13 +17,9 @@ class CategoryLogic
         return Category::where(['parent_id' => $parent_id])->get();
     }
 
-    public static function products($category_id, $product_type)
+    public static function products($category_id)
     {
-        $products = Product::active()
-            ->when(isset($product_type) && ($product_type == 'veg' || $product_type == 'non_veg'), function ($query) use ($product_type) {
-                return $query->productType(($product_type == 'veg') ? 'veg' : 'non_veg');
-            })
-            ->get();
+        $products = Product::active()->get();
         $product_ids = [];
         foreach ($products as $product) {
             foreach (json_decode($product['category_ids'], true) as $category) {

@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center mb-3">
                 <div class="col-sm">
-                    <h1 class="">{{translate('customers')}}
+                    <h1 class="page-header-title">{{translate('customers')}}
                         <span class="badge badge-soft-dark ml-2">({{ $customers->total() }})</span>
                     </h1>
                 </div>
@@ -33,7 +33,22 @@
               </a>
             </span>
 
-
+                <!-- Nav -->
+                <ul class="nav nav-tabs page-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active"
+                           href="#">{{translate('customer List')}}</a>
+                    </li>
+                    {{--<li class="nav-item">
+                        <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Open</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Unfulfilled</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Unpaid</a>
+                    </li>--}}
+                </ul>
                 <!-- End Nav -->
             </div>
             <!-- End Nav Scroller -->
@@ -147,7 +162,7 @@
                     $('#loading').show();
                 },
                 success: function (data) {
-                    $('.show-point-' + customer_id).text('( {{translate('Available Point : ')}} ' + data.updated_point + ' )');
+                    $('.show-point-' + customer_id).text('( Available Point : ' + data.updated_point + ' )');
                     $('.show-point-' + customer_id + '-table').text(data.updated_point);
                 },
                 complete: function () {

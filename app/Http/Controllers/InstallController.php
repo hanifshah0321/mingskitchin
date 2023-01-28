@@ -185,7 +185,7 @@ class InstallController extends Controller
                     PURCHASE_CODE=' . session('purchase_key') . '
                     BUYER_USERNAME=' . session('username') . '
                     SOFTWARE_ID=MzAzMjAzMzg=
-                    SOFTWARE_VERSION=9.0
+                    SOFTWARE_VERSION=8.0
                     ';
             $file = fopen(base_path('.env'), 'w');
             fwrite($file, $output);

@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i class="tio-add-circle-outlined"></i> {{translate('add')}} {{translate('new')}} {{translate('coupon')}}</h1>
+                    <h1 class="page-header-title"><i class="tio-add-circle-outlined"></i> {{translate('add')}} {{translate('new')}} {{translate('coupon')}}</h1>
                 </div>
             </div>
         </div>
@@ -183,7 +183,7 @@
                                                 <a class="dropdown-item"
                                                    href="{{route('admin.coupon.update',[$coupon['id']])}}">{{translate('edit')}}</a>
                                                 <a class="dropdown-item" href="javascript:"
-                                                   onclick="form_alert('coupon-{{$coupon['id']}}','{{translate('Want to delete this coupon ?')}}')">{{translate('delete')}}</a>
+                                                   onclick="form_alert('coupon-{{$coupon['id']}}','Want to delete this coupon ?')">{{translate('delete')}}</a>
                                                 <form action="{{route('admin.coupon.delete',[$coupon['id']])}}"
                                                       method="post" id="coupon-{{$coupon['id']}}">
                                                     @csrf @method('delete')

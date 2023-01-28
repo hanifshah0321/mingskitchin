@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-2">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i class="tio-add-circle-outlined"></i> {{translate('Add New Addon')}}</h1>
+                    <h1 class="page-header-title"><i class="tio-add-circle-outlined"></i> {{translate('Add New Addon')}}</h1>
                 </div>
             </div>
         </div>
@@ -70,6 +70,7 @@
             </div>
 
             <div class="col-sm-12 col-lg-12 mb-3 mb-lg-2">
+                <hr>
                 <div class="card">
                     <div class="card-header">
                         <div class="flex-start">

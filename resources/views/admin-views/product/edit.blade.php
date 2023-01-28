@@ -10,10 +10,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i
+                    <h1 class="page-header-title"><i
                             class="tio-edit"></i> {{translate('product update')}}</h1>
                 </div>
             </div>
@@ -147,7 +147,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-4 col-6">
+                            <div class="col-md-6 col-6">
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlSelect1">{{translate('category')}}<span
                                             class="input-label-secondary">*</span></label>
@@ -160,7 +160,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-6">
+                            <div class="col-md-6 col-6">
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlSelect1">{{translate('sub_category')}}<span
                                             class="input-label-secondary"></span></label>
@@ -172,16 +172,17 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-6">
+                            {{--<div class="col-md-4 col-6">
                                 <div class="form-group">
-                                    <label class="input-label" for="product_type">{{translate('product')}} {{translate('type')}}</label>
-                                    <select name="product_type" class="form-control js-select2-custom">
-                                        <option selected disabled>{{translate('select')}}</option>
-                                        <option value="veg" {{$product['product_type']=='veg'?'selected':''}}>{{translate('veg')}}</option>
-                                        <option value="non_veg" {{$product['product_type']=='non_veg'?'selected':''}}>{{translate('nonveg')}}</option>
+                                    <label class="input-label" for="exampleFormControlSelect1">Sub Sub Category<span
+                                            class="input-label-secondary"></span></label>
+                                    <select name="sub_sub_category_id" id="sub-sub-categories"
+                                            data-id="{{count($product_category)>=3?$product_category[2]->id:''}}"
+                                            class="form-control js-select2-custom">
+
                                     </select>
                                 </div>
-                            </div>
+                            </div>--}}
                         </div>
 
                         <div class="row" style="border: 1px solid #80808045; border-radius: 10px;padding-top: 10px;margin: 1px">

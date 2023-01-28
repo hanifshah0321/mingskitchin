@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i
+                    <h1 class="page-header-title"><i
                             class="tio-add-circle-outlined"></i> {{translate('add New Branch')}}
                     </h1>
                 </div>
@@ -127,12 +127,20 @@
                             <thead class="thead-light">
                             <tr>
                                 <th>{{translate('#')}}</th>
-                                <th>{{translate('image')}}</th>
-                                <th>{{translate('name')}}</th>
-                                <th>{{translate('email')}}</th>
-                                <th>{{translate('promotional status')}}</th>
-                                <th>{{translate('action')}}</th>
+                                <th style="width: 50%">{{translate('image')}}</th>
+                                <th style="width: 50%">{{translate('name')}}</th>
+                                <th style="width: 50%">{{translate('email')}}</th>
+                                <th style="width: 10%">{{translate('action')}}</th>
                             </tr>
+                            {{--                            <tr>--}}
+                            {{--                                <th></th>--}}
+                            {{--                                <th>--}}
+                            {{--                                    <input type="text" id="column1_search" class="form-control form-control-sm"--}}
+                            {{--                                           placeholder="Search branch">--}}
+                            {{--                                </th>--}}
+                            {{--                                <th></th>--}}
+                            {{--                                <th></th>--}}
+                            {{--                            </tr>--}}
                             </thead>
 
                             <tbody>
@@ -157,14 +165,6 @@
                                     </td>
                                     <td>{{$branch['email']}}</td>
                                     <td>
-                                        <label class="toggle-switch toggle-switch-sm">
-                                            <input type="checkbox" class="toggle-switch-input"
-                                                   onclick="location.href='{{route('admin.promotion.status',[$branch['id'],$branch->branch_promotion_status?0:1])}}'"
-                                                   class="toggle-switch-input" {{$branch->branch_promotion_status?'checked':''}}>
-                                            <span class="toggle-switch-label"><span class="toggle-switch-indicator"></span></span>
-                                        </label>
-                                    </td>
-                                    <td>
                                     @if(env('APP_MODE')!='demo' || $branch['id']!=1)
                                         <!-- Dropdown -->
                                             <div class="dropdown">
@@ -179,7 +179,7 @@
                                                        href="{{route('admin.branch.edit',[$branch['id']])}}">{{translate('edit')}}</a>
                                                     @if($branch['id']!=1)
                                                         <a class="dropdown-item" href="javascript:"
-                                                           onclick="form_alert('branch-{{$branch['id']}}','{{translate('Want to delete this branch ?')}}')">{{translate('delete')}}</a>
+                                                           onclick="form_alert('branch-{{$branch['id']}}','Want to delete this branch ?')">{{translate('delete')}}</a>
                                                         <form action="{{route('admin.branch.delete',[$branch['id']])}}"
                                                               method="post" id="branch-{{$branch['id']}}">
                                                             @csrf @method('delete')

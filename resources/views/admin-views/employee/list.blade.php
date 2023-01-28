@@ -9,14 +9,13 @@
 
 @section('content')
 <div class="content container-fluid">
-    <div class="pb-3">
-        <div class="row align-items-center">
-            <div class="col-sm mb-2 mb-sm-0">
-                <h1 class=""><i
-                        class="tio-filter-list"></i> {{translate('employee')}} {{translate('list')}}</h1>
-            </div>
-        </div>
-    </div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">{{translate('Dashboard')}}</a></li>
+            <li class="breadcrumb-item" aria-current="page">{{translate('Employee')}}</li>
+            <li class="breadcrumb-item" aria-current="page">{{translate('List')}}</li>
+        </ol>
+    </nav>
 
     <div class="row" style="margin-top: 20px">
         <div class="col-md-12">

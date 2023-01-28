@@ -6,6 +6,7 @@ use App\CentralLogics\Helpers;
 use App\CentralLogics\ProductLogic;
 use App\Http\Controllers\Controller;
 use App\Model\Product;
+use App\Membership;
 use App\Model\Review;
 use App\Model\Translation;
 use Illuminate\Http\Request;
@@ -16,14 +17,14 @@ class ProductController extends Controller
 {
     public function get_latest_products(Request $request)
     {
-        $products = ProductLogic::get_latest_products($request['limit'], $request['offset'], $request['product_type'], $request['name'], $request['category_ids']);
+        $products = ProductLogic::get_latest_products($request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
         return response()->json($products, 200);
     }
 
     public function get_popular_products(Request $request)
     {
-        $products = ProductLogic::get_popular_products($request['limit'], $request['offset'], $request['product_type']);
+        $products = ProductLogic::get_popular_products($request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
         return response()->json($products, 200);
     }
@@ -37,13 +38,8 @@ class ProductController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => Helpers::error_processor($validator)], 403);
         }
-        $product_type = $request['product_type'];
-        $products = ProductLogic::search_products($request['name'], $request['limit'], $request['offset'], $product_type);
 
-        if($product_type != 'veg' && $product_type != 'non_veg') {
-            $product_type = 'all';
-        }
-
+        $products = ProductLogic::search_products($request['name'], $request['limit'], $request['offset']);
         if (count($products['products']) == 0) {
             $key = explode(' ', $request['name']);
             $ids = Translation::where(['key' => 'name'])->where(function ($query) use ($key) {
@@ -52,11 +48,7 @@ class ProductController extends Controller
                 }
             })->pluck('translationable_id')->toArray();
             $paginator = Product::active()->whereIn('id', $ids)->withCount(['wishlist'])->with(['rating'])
-                ->when(isset($product_type) && ($product_type != 'all'), function ($query) use ($product_type) {
-                    return $query->productType(($product_type == 'veg') ? 'veg' : 'non_veg');
-                })
                 ->paginate($request['limit'], ['*'], 'page', $request['offset']);
-
             $products = [
                 'total_size' => $paginator->total(),
                 'limit' => $request['limit'],
@@ -175,5 +167,13 @@ class ProductController extends Controller
         $review->save();
 
         return response()->json(['message' => translate('review_submit_success')], 200);
+    }
+
+
+    public function allmembershipplan(Request $request)
+    {
+        $plan = Membership::all();
+        
+        return response()->json($plan, 200);
     }
 }

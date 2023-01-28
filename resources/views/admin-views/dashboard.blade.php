@@ -28,7 +28,7 @@
             text-align: center;
             border-radius: 6px;
             padding: 6px;
-            /*border: 2px solid #8080805e;*/
+            border: 2px solid #8080805e;
         }
     </style>
 @endpush
@@ -99,19 +99,11 @@
                                     </h5>
                                     <!-- End Legend Indicators -->
                                 </div>
-                                <div class="col-md-12 graph-border-1">
+                                <div class="col-md-4 graph-border-1">
                                     <div class="mt-2 center-div">
-                                          <span class="h6 mr-5 mb-0">
-                                              <i class="legend-indicator" style="background-color: #0177CD!important;"></i>
-                                             {{ translate('Online Earnings') }} : {{ \App\CentralLogics\Helpers::set_symbol(array_sum($earning)) }}
-                                          </span>
-                                        <span class="h6 mr-5 mb-0">
-                                              <i class="legend-indicator" style="background-color: #ACDBAB!important;"></i>
-                                             {{ translate('Table Earnings') }} : {{ \App\CentralLogics\Helpers::set_symbol(array_sum($table_earning)) }}
-                                          </span>
-                                        <span class="h6 mr-5 mb-0">
-                                              <i class="legend-indicator" style="background-color: #FFB36D!important;"></i>
-                                             {{ translate('POS Earnings') }} : {{ \App\CentralLogics\Helpers::set_symbol(array_sum($pos_earning)) }}
+                                          <span class="h6 mb-0">
+                                              <i class="legend-indicator" style="background-color: #B6C867!important;"></i>
+                                             {{ translate('earnings') }} : {{ \App\CentralLogics\Helpers::set_symbol(array_sum($earning)) }}
                                           </span>
                                     </div>
                                 </div>
@@ -128,23 +120,11 @@
                                   "datasets": [
                                  {
                                     "data": [{{$earning[1]}},{{$earning[2]}},{{$earning[3]}},{{$earning[4]}},{{$earning[5]}},{{$earning[6]}},{{$earning[7]}},{{$earning[8]}},{{$earning[9]}},{{$earning[10]}},{{$earning[11]}},{{$earning[12]}}],
-                                    "backgroundColor": "#0177CD",
-                                    "borderColor": "#0177CD"
-                                  },
-                                  {
-                                    "data": [{{$table_earning[1]}},{{$table_earning[2]}},{{$table_earning[3]}},{{$table_earning[4]}},{{$table_earning[5]}},{{$table_earning[6]}},{{$table_earning[7]}},{{$table_earning[8]}},{{$table_earning[9]}},{{$table_earning[10]}},{{$table_earning[11]}},{{$table_earning[12]}}],
-                                    "backgroundColor": "#ACDBAB",
-                                    "borderColor": "#ACDBAB"
-                                  },
-                                  {
-                                    "data": [{{$pos_earning[1]}},{{$pos_earning[2]}},{{$pos_earning[3]}},{{$pos_earning[4]}},{{$pos_earning[5]}},{{$pos_earning[6]}},{{$pos_earning[7]}},{{$pos_earning[8]}},{{$pos_earning[9]}},{{$pos_earning[10]}},{{$pos_earning[11]}},{{$pos_earning[12]}}],
-                                    "backgroundColor": "#FFB36D",
-                                    "borderColor": "#FFB36D"
-                                  }
-                                  ]
+                                    "backgroundColor": "#B6C867",
+                                    "borderColor": "#B6C867"
+                                  }]
                                 },
                                 "options": {
-
                                   "scales": {
                                     "yAxes": [{
                                       "gridLines": {
@@ -266,11 +246,11 @@
                     type: 'doughnut',
                     data: {
                         labels: [
-                            '{{translate("Customer")}} ( {{$data['customer']}} )',
-                            '{{translate("Product")}} ( {{$data['product']}} )',
-                            '{{translate("Order")}} ( {{$data['order']}} )',
-                            '{{translate("Category")}} ( {{$data['category']}} )',
-                            '{{translate("Branch")}} ( {{$data['branch']}} )',
+                            'Customer ( {{$data['customer']}} )',
+                            'Product ( {{$data['product']}} )',
+                            'Order ( {{$data['order']}} )',
+                            'Category ( {{$data['category']}} )',
+                            'Branch ( {{$data['branch']}} )',
                         ],
                         datasets: [{
                             label: 'Business',

@@ -266,25 +266,9 @@
                                 <select onchange="store_key('customer_id',this.value)" id='customer' name="customer_id" data-placeholder="{{translate('Walk In Customer')}}" class="js-data-example-ajax form-control">
 
                                 </select>
-                            </div>
-                            @if(session('customer_id'))
-                                <div class="pt-2 pl-2">
-                                    <p>{{ translate('customer') }} {{ $selected_customer->f_name}} {{$selected_customer->l_name}} {{ translate('is selected') }}</p>
-                                </div>
-                            @endif
-                            <div class="d-flex flex-row p-1">
-                                <select onchange="store_key('table_id',this.value)" id='table' name="table_id" class="js-select2-custom table-data-selector form-control">
-                                    <option selected disabled>{{translate('Select Table')}}</option>
-                                    @foreach($tables as $table)
-                                        <option value="{{$table['id']}}" {{ $table['id'] == session('table_id') ? 'selected' : ''}}>{{translate('Table')}} - {{$table['number']}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="d-flex flex-row p-1">
-                                <input type="number" value="{{ session('people_number') }}" name="number_of_people" onkeyup="store_key('people_number',this.value)" id="number_of_people" class="form-control" id="password" min="1" max="99" placeholder="{{translate('Number Of People')}}">
-                            </div>
-                            <div class="d-flex justify-content-end p-1">
-                                <a href="{{ route('branch.pos.clear') }}" type="button" class="btn btn-primary btn-sm  text-nowrap">Clear</a>
+                                <!-- <button class="btn btn-sm btn-white btn-outline-primary ml-1" type="button" title="Add Customer">
+                                    <i class="tio-add-circle text-dark"></i>
+                                </button> -->
                             </div>
                         </div>
                         <div class='w-100' id="cart">
@@ -317,12 +301,12 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body row">
+                <div class="modal-body row" style="font-family: emoji;">
                     <div class="col-md-12">
                         <center>
                             <input type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea')"
-                                value="{{translate('Proceed, If thermal printer is ready.')}}"/>
-                            <a href="{{url()->previous()}}" class="btn btn-danger non-printable">{{translate('Back')}}</a>
+                                value="Proceed, If thermal printer is ready."/>
+                            <a href="{{url()->previous()}}" class="btn btn-danger non-printable">Back</a>
                         </center>
                         <hr class="non-printable">
                     </div>
@@ -379,16 +363,6 @@
         $('#print-invoice').modal('show');
         @endif
     });
-
-    // INITIALIZATION OF SELECT2
-    // =======================================================
-    $('.js-select2-custom').each(function () {
-            var select2 = $.HSCore.components.HSSelect2.init($(this));
-    });
-
-    @if(session('customer_id'))
-    $('#customer').val("{{session('customer_id')}}").select2();
-    @endif
     function printDiv(divName) {
         var printContents = document.getElementById(divName).innerHTML;
         var originalContents = document.body.innerHTML;
@@ -414,9 +388,6 @@
     });
 
     function store_key(key, value) {
-        if(key === 'table_id') {
-            $('#pay_after_eating').removeClass('d-none');
-        }
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': "{{csrf_token()}}"
@@ -429,25 +400,10 @@
                 value:value,
             },
             success: function (data) {
-                if(key === 'people_number'){
-                    var selected_field_text = key;
-                    var selected_field = selected_field_text.replace("_number", " ");
-                    var upper = selected_field.charAt(0).toUpperCase() + selected_field.substring(1);
-                    toastr.success(upper+' '+'{{translate('selected')}}!', {
-                        CloseButton: true,
-                        ProgressBar: true
-                    });
-                }else{
-                    var selected_field_text = key;
-                    var selected_field = selected_field_text.replace("_id", " ");
-                    var upper = selected_field.charAt(0).toUpperCase() + selected_field.substring(1);
-                    toastr.success(upper+' '+'{{translate('selected')}}!', {
-                        CloseButton: true,
-                        ProgressBar: true
-                    });
-                }
-
-
+                toastr.success(key+' '+'{{translate('selected')}}!', {
+                    CloseButton: true,
+                    ProgressBar: true
+                });
             },
         });
     }
@@ -511,7 +467,18 @@
     }
 
     function checkAddToCartValidity() {
-        return true;
+        var names = {};
+        $('#add-to-cart-form input:radio').each(function () { // find unique names
+            names[$(this).attr('name')] = true;
+        });
+        var count = 0;
+        $.each(names, function () { // then count them
+            count++;
+        });
+        if ($('input:radio:checked').length == count) {
+            return true;
+        }
+        return false;
     }
 
     function cartQuantityInitialize() {
@@ -564,8 +531,7 @@
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: '{{translate("Cart")}}',
-                    confirmButtonText:'{{translate("Ok")}}',
+                    title: 'Cart',
                     text: '{{translate('Sorry, the minimum value was reached')}}'
                 });
                 $(this).val($(this).data('oldValue'));
@@ -575,8 +541,7 @@
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: '{{translate("Cart")}}',
-                    confirmButtonText:'{{translate("Ok")}}',
+                    title: 'Cart',
                     text: '{{translate('Sorry, stock limit exceeded')}}.'
                 });
                 $(this).val($(this).data('oldValue'));
@@ -636,16 +601,14 @@
                     if (data.data == 1) {
                         Swal.fire({
                             icon: 'info',
-                            title: '{{translate("Cart")}}',
-                            confirmButtonText:'{{translate("Ok")}}',
+                            title: 'Cart',
                             text: "{{translate('Product already added in cart')}}"
                         });
                         return false;
                     } else if (data.data == 0) {
                         Swal.fire({
                             icon: 'error',
-                            title: '{{translate("Cart")}}',
-                            confirmButtonText:'{{translate("Ok")}}',
+                            title: 'Cart',
                             text: '{{translate('Sorry, product out of stock')}}.'
                         });
                         return false;
@@ -666,8 +629,7 @@
         } else {
             Swal.fire({
                 type: 'info',
-                title: '{{translate("Cart")}}',
-                confirmButtonText:'{{translate("Ok")}}',
+                title: 'Cart',
                 text: '{{translate('Please choose all the options')}}'
             });
         }
@@ -728,8 +690,7 @@
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '{{translate("Cart")}}',
-                confirmButtonText:'{{translate("Ok")}}',
+                title: 'Cart',
                 text: '{{translate('Sorry, the minimum value was reached')}}'
             });
             element.val(element.data('oldValue'));
@@ -766,6 +727,13 @@
     };
 
 
+
+    // INITIALIZATION OF SELECT2
+    // =======================================================
+    $('.js-select2-custom').each(function () {
+        var select2 = $.HSCore.components.HSSelect2.init($(this));
+    });
+
     $('.js-data-example-ajax').select2({
         ajax: {
             url: '{{route('branch.pos.customers')}}',
@@ -776,7 +744,6 @@
                 };
             },
             processResults: function (data) {
-                console.log('data: ' + JSON.stringify(data));
                 return {
                 results: data
                 };
@@ -791,7 +758,6 @@
             }
         }
     });
-
 
     // $("#order_place").submit(function(e) {
 
@@ -810,8 +776,6 @@
         }
         return true;
     });
-
-
 
 </script>
 <!-- IE Support -->

@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-2">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i class="tio-notifications"></i> {{translate('notification')}} {{translate('update')}}</h1>
+                    <h1 class="page-header-title"><i class="tio-notifications"></i> {{translate('notification')}} {{translate('update')}}</h1>
                 </div>
             </div>
         </div>
@@ -36,15 +36,14 @@
                                    accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
                             <label class="custom-file-label" for="customFileEg1">{{translate('choose')}} {{translate('file')}}</label>
                         </div>
-
-                        <div class="text-center mt-3">
+                        <hr>
+                        <center>
                             <img style="width: 30%;border: 1px solid; border-radius: 10px;" id="viewer"
-                                 onerror="this.src='{{asset('public/assets/admin/img/1920x400/img2.jpg')}}'"
                                  src="{{asset('storage/app/public/notification')}}/{{$notification['image']}}" alt="image"/>
-                        </div>
+                        </center>
                     </div>
-
-                    <button type="submit" class="btn btn-primary mt-2">{{translate('submit')}}</button>
+                    <hr>
+                    <button type="submit" class="btn btn-primary">{{translate('submit')}}</button>
                 </form>
             </div>
             <!-- End Table -->

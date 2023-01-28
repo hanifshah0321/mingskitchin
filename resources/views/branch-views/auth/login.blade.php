@@ -161,7 +161,7 @@
                                 </div>
                             @endif
 
-                            <button type="submit" class="btn btn-lg btn-block btn-primary">{{translate('Sign in')}}</button>
+                            <button type="submit" class="btn btn-lg btn-block btn-primary">Sign in</button>
                         </form>
                         <!-- End Form -->
                     </div>

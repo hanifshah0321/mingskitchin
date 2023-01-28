@@ -1,17 +1,7 @@
 @extends('layouts.admin.app')
 
 @section('title', translate('Employee Add'))
-<style>
-    .password-container{
-        position: relative;
-    }
 
-    .togglePassword{
-        position: absolute;
-        top: 14px;
-        right: 16px;
-    }
-</style>
 @push('css_or_js')
     <link href="{{asset('public/assets/back-end')}}/css/select2.min.css" rel="stylesheet"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -19,20 +9,20 @@
 
 @section('content')
 <div class="content container-fluid">
-    <div class="pb-3">
-        <div class="row align-items-center">
-            <div class="col-sm mb-2 mb-sm-0">
-                <h1 class=""><i
-                        class="tio-add-circle-outlined"></i> {{translate('add New Employee')}}
-                </h1>
-            </div>
-        </div>
-    </div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">{{translate('Dashboard')}}</a></li>
+            <li class="breadcrumb-item" aria-current="page">{{translate('employee_add')}}</li>
+        </ol>
+    </nav>
 
     <!-- Content Row -->
     <div class="row">
         <div class="col-md-12">
             <div class="card">
+                <div class="card-header">
+                    {{translate('employee_form')}}
+                </div>
                 <div class="card-body">
                     <form action="{{route('admin.employee.add-new')}}" method="post" enctype="multipart/form-data"
                           style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};">
@@ -42,12 +32,12 @@
                                 <div class="col-md-6">
                                     <label for="name">{{translate('Name')}}</label>
                                     <input type="text" name="name" class="form-control" id="name"
-                                           placeholder="{{translate('Name')}}" value="{{old('name')}}" required>
+                                           placeholder="{{translate('Ex')}} : {{translate('Md. Al Imrun')}}" value="{{old('name')}}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="name">{{translate('Phone')}}</label>
                                     <input type="text" name="phone" value="{{old('phone')}}" class="form-control" id="phone"
-                                           placeholder="{{translate('Phone')}}" required>
+                                           placeholder="{{translate('Ex')}} : +88017********" required>
                                 </div>
                             </div>
                         </div>
@@ -57,7 +47,7 @@
                                 <div class="col-md-6">
                                     <label for="name">{{translate('Email')}}</label>
                                     <input type="email" name="email" value="{{old('email')}}" class="form-control" id="email"
-                                           placeholder="{{translate('Email')}}" required>
+                                           placeholder="{{translate('Ex')}} : ex@gmail.com" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="name">{{translate('Role')}}</label>
@@ -77,11 +67,8 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="name">{{translate('password')}}</label>
-                                    <div class="password-container">
-                                        <input type="password" name="password" class="form-control pr-7" id="password"
-                                               placeholder="{{translate('Password')}}" required>
-                                        <i  class="tio-hidden-outlined togglePassword"></i>
-                                    </div>
+                                    <input type="text" name="password" class="form-control" id="password"
+                                           placeholder="{{translate('Password')}}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="name">{{translate('employee_image')}}</label><span class="badge badge-soft-danger">( {{translate('ratio')}} 1:1 )</span>
@@ -101,7 +88,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">{{translate('submit')}}</button>
+                        <button type="submit" class="btn btn-primary float-right">{{translate('submit')}}</button>
                     </form>
                 </div>
             </div>
@@ -130,24 +117,12 @@
             readURL(this);
         });
 
-       /* $(".js-example-theme-single").select2({
+        $(".js-example-theme-single").select2({
             theme: "classic"
         });
 
         $(".js-example-responsive").select2({
             width: 'resolve'
-        });*/
-
-        /*==================================
-        togglePassword
-       ====================================*/
-        $('.togglePassword').on('click', function (e) {
-            console.log("fired")
-            const password = $(this).siblings('input');
-            password.attr('type') === 'password' ? $(this).addClass('tio-visible-outlined').removeClass('tio-hidden-outlined') :$(this).addClass('tio-hidden-outlined').removeClass('tio-visible-outlined');
-            const type = password.attr('type') === 'password' ? 'text' : 'password';
-            password.attr('type', type);
         });
-
     </script>
 @endpush

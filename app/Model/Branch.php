@@ -14,13 +14,4 @@ class Branch extends Authenticatable
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
-
-    public function branch_promotion(){
-        return $this->hasMany(BranchPromotion::class);
-    }
-
-    public function table(){
-        return $this->hasMany(Table::class, 'branch_id', 'id');
-    }
-
 }

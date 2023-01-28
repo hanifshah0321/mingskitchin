@@ -46,12 +46,12 @@
                 <div class="col-sm-auto">
                     <a class="btn btn-icon btn-sm btn-ghost-secondary rounded-circle mr-1"
                        href="{{route('admin.customer.view',[$customer['id']-1])}}"
-                       data-toggle="tooltip" data-placement="top" title="{{translate('Previous customer')}}">
+                       data-toggle="tooltip" data-placement="top" title="Previous customer">
                         <i class="tio-arrow-backward"></i>
                     </a>
                     <a class="btn btn-icon btn-sm btn-ghost-secondary rounded-circle"
                        href="{{route('admin.customer.view',[$customer['id']+1])}}" data-toggle="tooltip"
-                       data-placement="top" title="{{translate('Next customer')}}">
+                       data-placement="top" title="Next customer">
                         <i class="tio-arrow-forward"></i>
                     </a>
                 </div>
@@ -261,7 +261,7 @@
                     <div class="modal-body">
                         <!-- Input Group -->
                         <div class="form-group">
-                            <input type="number" name="point" class="form-control" min="1" max="100000"
+                            <input type="number" name="point" class="form-control"
                                    placeholder="EX : 100" required>
                         </div>
                         <!-- End Input Group -->

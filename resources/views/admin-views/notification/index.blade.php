@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i class="tio-notifications"></i> {{translate('notification')}}</h1>
+                    <h1 class="page-header-title"><i class="tio-notifications"></i> {{translate('notification')}}</h1>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
                         <textarea name="description" class="form-control" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>{{translate('image')}}</label><small style="color: red"> ( {{translate('ratio')}} 3:1 )</small>
+                        <label>{{translate('image')}}</label><small style="color: red">* ( {{translate('ratio')}} 3:1 )</small>
                         <div class="custom-file">
                             <input type="file" name="image" id="customFileEg1" class="custom-file-input"
                                    accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
@@ -102,7 +102,7 @@
                                                  onerror="this.src='{{asset('public/assets/admin/img/160x160/img2.jpg')}}'"
                                                  src="{{asset('storage/app/public/notification')}}/{{$notification['image']}}">
                                         @else
-                                            <label class="badge badge-soft-warning">{{translate('No')}} {{translate('image')}}</label>
+                                            <label class="badge badge-soft-warning">No {{translate('image')}}</label>
                                         @endif
                                     </td>
                                     <td>

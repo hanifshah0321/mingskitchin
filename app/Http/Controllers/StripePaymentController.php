@@ -24,15 +24,14 @@ class StripePaymentController extends Controller
         $config = Helpers::get_business_settings('stripe');
         Stripe::setApiKey($config['api_key']);
         header('Content-Type: application/json');
-        $currency_code = Helpers::get_business_settings('currency') ?? 'usd';
+        $currency_code = Helpers::get_business_settings('currency');
 
-        $currencies_not_supported_cents = ['BIF', 'CLP', 'DJF', 'GNF', 'JPY', 'KMF', 'KRW', 'MGA', 'PYG', 'RWF', 'UGX', 'VND', 'VUV', 'XAF', 'XOF', 'XPF'];
         $checkout_session = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-                    'currency' => $currency_code,
-                    'unit_amount' => in_array($currency_code, $currencies_not_supported_cents) ? (int)$order_amount : ($order_amount * 100),
+                    'currency' => $currency_code ?? 'usd',
+                    'unit_amount' => $order_amount * 100,
                     'product_data' => [
                         'name' => BusinessSetting::where(['key' => 'restaurant_name'])->first()->value,
                         'images' => [asset('storage/app/public/restaurant') . '/' . BusinessSetting::where(['key' => 'logo'])->first()->value],

@@ -44,7 +44,7 @@ class OrderController extends Controller
             $query_param = ['search' => $request['search']];
         }
 
-        $orders = $orders->notPos()->notDineIn()->latest()->paginate(Helpers::getPagination())->appends($query_param);
+        $orders = $orders->notPos()->latest()->paginate(Helpers::getPagination())->appends($query_param);
         return view('branch-views.order.list', compact('orders', 'status', 'search'));
     }
 
@@ -67,18 +67,19 @@ class OrderController extends Controller
     {
         $order = Order::with('details')->where(['id' => $id, 'branch_id' => auth('branch')->id()])->first();
 
-        if(!isset($order)) {
-            Toastr::info(translate('No more orders!'));
-            return back();
-        }
-
         //remaining delivery time
         $delivery_date_time =  $order['delivery_date']. ' ' .$order['delivery_time'];
         $ordered_time = Carbon::createFromFormat('Y-m-d H:i:s', date("Y-m-d H:i:s", strtotime($delivery_date_time)));
         $remaining_time = $ordered_time->add($order['preparation_time'], 'minute')->format('Y-m-d H:i:s');
         $order['remaining_time'] = $remaining_time;
 
-        return view('branch-views.order.order-view', compact('order'));
+
+        if (isset($order)) {
+            return view('branch-views.order.order-view', compact('order'));
+        } else {
+            Toastr::info(translate('No more orders!'));
+            return back();
+        }
     }
 
     public function status(Request $request)
@@ -94,10 +95,7 @@ class OrderController extends Controller
         }
         $order->save();
 
-        $fcm_token=null;
-        if($order->customer) {
-            $fcm_token = $order->customer->cm_firebase_token;
-        }
+        $fcm_token = $order->customer->cm_firebase_token;
         $value = Helpers::order_status_update_message($request->order_status);
         try {
             if ($value) {
@@ -108,9 +106,7 @@ class OrderController extends Controller
                     'image' => '',
                     'type'=>'order_status',
                 ];
-                if(isset($fcm_token)) {
-                    Helpers::send_push_notif_to_device($fcm_token, $data);
-                }
+                Helpers::send_push_notif_to_device($fcm_token, $data);
             }
         } catch (\Exception $e) {
             Toastr::warning(translate('Push notification failed for Customer!'));
@@ -123,7 +119,7 @@ class OrderController extends Controller
             try {
                 if ($value) {
                     $data = [
-                        'title' => translate('Order'),
+                        'title' => 'Order',
                         'description' => $value,
                         'order_id' => $order['id'],
                         'image' => '',
@@ -235,7 +231,7 @@ class OrderController extends Controller
     public function payment_status(Request $request)
     {
         $order = Order::where(['id' => $request->id, 'branch_id' => auth('branch')->id()])->first();
-        if ($request->payment_status == 'paid' && $order['transaction_reference'] == null && $order['payment_method'] != 'cash_on_delivery' && $order['order_type'] != 'dine_in') {
+        if ($request->payment_status == 'paid' && $order['transaction_reference'] == null && $order['payment_method'] != 'cash_on_delivery') {
             Toastr::warning(translate('Add your payment reference code first!'));
             return back();
         }
@@ -266,7 +262,7 @@ class OrderController extends Controller
         ];
 
         DB::table('customer_addresses')->where('id', $id)->update($address);
-        Toastr::success(translate('Address updated!'));
+        Toastr::success(translate('Payment status updated!'));
         return back();
     }
 

@@ -87,7 +87,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">{{translate('show data by date range')}}</label>
+                                <label for="exampleInputEmail1" class="form-label">{{translate('show')}} {{translate('data')}} by {{translate('date')}}
+                                    {{translate('range')}}</label>
                             </div>
                         </div>
                         <div class="col-4">
@@ -114,7 +115,7 @@
             @php
                 $from = session('from_date');
                $to = session('to_date');
-               $total_tax=\App\Model\Order::earningReport()
+               $total_tax=\App\Model\Order::where(['order_status'=>'delivered'])
                ->whereBetween('created_at', [$from, $to])
                ->sum('total_tax_amount');
                if($total_tax==0){
@@ -123,7 +124,7 @@
             @endphp
             <div class="col-sm-6 col-lg-6 mb-3 mb-lg-6">
             @php
-                $total_sold=\App\Model\Order::earningReport()->whereBetween('created_at', [$from, $to])->sum('order_amount');
+                $total_sold=\App\Model\Order::where(['order_status'=>'delivered'])->whereBetween('created_at', [$from, $to])->sum('order_amount');
             if($total_sold==0){
                 $total_sold=.01;
             }
@@ -227,9 +228,9 @@
             <!-- Header -->
             <div class="card-header">
                 @php
-                    $total_sold=\App\Model\Order::earningReport()->whereBetween('created_at', [date('y-01-01'), date('y-12-31')])->sum('order_amount')
+                    $total_sold=\App\Model\Order::where(['order_status'=>'delivered'])->whereBetween('created_at', [date('y-01-01'), date('y-12-31')])->sum('order_amount')
                 @endphp
-                <h6 class="card-subtitle mb-0">{{translate('Total sale')}} ({{date('Y')}}) :<span
+                <h6 class="card-subtitle mb-0">Total sale of {{date('Y')}} :<span
                         class="h3 ml-sm-2"> {{ \App\CentralLogics\Helpers::set_symbol($total_sold) }}</span>
                 </h6>
 
@@ -249,7 +250,7 @@
                 for ($i=1;$i<=12;$i++){
                     $from = date('Y-'.$i.'-01');
                     $to = date('Y-'.$i.'-30');
-                    $sold[$i]=Helpers::set_price(\App\Model\Order::earningReport()->whereBetween('created_at', [$from, $to])->sum('order_amount'));
+                    $sold[$i]=Helpers::set_price(\App\Model\Order::where(['order_status'=>'delivered'])->whereBetween('created_at', [$from, $to])->sum('order_amount'));
                 }
         @endphp
 
@@ -258,7 +259,7 @@
                 for ($i=1;$i<=12;$i++){
                     $from = date('Y-'.$i.'-01');
                     $to = date('Y-'.$i.'-30');
-                    $tax[$i]=\App\Model\Order::earningReport()->whereBetween('created_at', [$from, $to])->sum('total_tax_amount');
+                    $tax[$i]=\App\Model\Order::where(['order_status'=>'delivered'])->whereBetween('created_at', [$from, $to])->sum('total_tax_amount');
                 }
         @endphp
 

@@ -18,7 +18,7 @@
 
                 <div class="col-sm-auto">
                     <a class="btn btn-primary" href="{{route('branch.dashboard')}}">
-                        <i class="tio-home mr-1"></i> {{ translate('Dashboard') }}
+                        <i class="tio-home mr-1"></i> Dashboard
                     </a>
                 </div>
             </div>
@@ -115,7 +115,7 @@
                                 <label for="firstNameLabel" class="col-sm-3 col-form-label input-label">{{ translate('Branch name') }} <i
                                         class="tio-help-outlined text-body ml-1" data-toggle="tooltip"
                                         data-placement="top"
-                                        title="{{translate('Display name')}}"></i></label>
+                                        title="Display name"></i></label>
 
                                 <div class="col-sm-9">
                                     <div class="input-group input-group-sm-down-break">
@@ -138,7 +138,7 @@
                             </div>
 
                             <div class="d-flex justify-content-end">
-                                <button type="button" onclick="{{env('APP_MODE')!='demo'?"form_alert('branch-settings-form','".translate("Want to update branch info ?")."')":"call_demo()"}}" class="btn btn-primary">{{ translate('Save changes') }}</button>
+                                <button type="button" onclick="{{env('APP_MODE')!='demo'?"form_alert('branch-settings-form','Want to update branch info ?')":"call_demo()"}}" class="btn btn-primary">Save changes</button>
                             </div>
 
                             <!-- End Form -->
@@ -201,7 +201,7 @@
                             <!-- End Form Group -->
 
                             <div class="d-flex justify-content-end">
-                                <button type="button" onclick="{{env('APP_MODE')!='demo'?"form_alert('changePasswordForm','".translate("Want to update branch password ?")."')":"call_demo()"}}" class="btn btn-primary">{{ translate('Save Changes') }}</button>
+                                <button type="button" onclick="{{env('APP_MODE')!='demo'?"form_alert('changePasswordForm','Want to update branch password ?')":"call_demo()"}}" class="btn btn-primary">Save Changes</button>
                             </div>
                         </form>
                         <!-- End Form -->

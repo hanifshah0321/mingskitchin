@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i class="tio-filter-list"></i> {{translate('Banner List')}} <span class="text-primary">({{ $banners->total() }})</span></h1>
+                    <h1 class="page-header-title"><i class="tio-filter-list"></i> {{translate('Banner List')}} <span class="text-primary">({{ $banners->total() }})</span></h1>
                 </div>
             </div>
         </div>
@@ -61,12 +61,12 @@
                                         @if($banner['status']==1)
                                             <div style="padding: 10px;border: 1px solid;cursor: pointer"
                                                  onclick="location.href='{{route('admin.banner.status',[$banner['id'],0])}}'">
-                                                <span class="legend-indicator bg-success"></span>{{translate('Active')}}
+                                                <span class="legend-indicator bg-success"></span>Active
                                             </div>
                                         @else
                                             <div style="padding: 10px;border: 1px solid;cursor: pointer"
                                                  onclick="location.href='{{route('admin.banner.status',[$banner['id'],1])}}'">
-                                                <span class="legend-indicator bg-danger"></span>{{translate('Disabled')}}
+                                                <span class="legend-indicator bg-danger"></span>Disabled
                                             </div>
                                         @endif
                                     </td>
@@ -82,7 +82,7 @@
                                                 <a class="dropdown-item"
                                                    href="{{route('admin.banner.edit',[$banner['id']])}}">{{translate('edit')}}</a>
                                                 <a class="dropdown-item" href="javascript:"
-                                                   onclick="form_alert('banner-{{$banner['id']}}','{{translate('Want to delete this banner')}}')">{{translate('delete')}}</a>
+                                                   onclick="form_alert('banner-{{$banner['id']}}','Want to delete this banner')">{{translate('delete')}}</a>
                                                 <form action="{{route('admin.banner.delete',[$banner['id']])}}"
                                                       method="post" id="banner-{{$banner['id']}}">
                                                     @csrf @method('delete')

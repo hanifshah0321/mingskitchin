@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
-use App\Model\Notification;
 use App\Model\Order;
-use App\Model\TableOrder;
-use App\User;
 use Brian2694\Toastr\Facades\Toastr;
 use DateTime;
 use Illuminate\Http\Request;
@@ -60,7 +57,7 @@ class OrderController extends Controller
             }
         }
 
-        $orders = $query->notPos()->notDineIn()->latest()->paginate(Helpers::getPagination())->appends($query_param);
+        $orders = $query->notPos()->latest()->paginate(Helpers::getPagination())->appends($query_param);
         return view('admin-views.order.list', compact('orders', 'status', 'search'));
     }
 
@@ -68,18 +65,18 @@ class OrderController extends Controller
     {
         $order = Order::with('details')->where(['id' => $id])->first();
 
-        if(!isset($order)) {
-            Toastr::info(translate('No more orders!'));
-            return back();
-        }
-
         //remaining delivery time
         $delivery_date_time =  $order['delivery_date']. ' ' .$order['delivery_time'];
         $ordered_time = Carbon::createFromFormat('Y-m-d H:i:s', date("Y-m-d H:i:s", strtotime($delivery_date_time)));
         $remaining_time = $ordered_time->add($order['preparation_time'], 'minute')->format('Y-m-d H:i:s');
         $order['remaining_time'] = $remaining_time;
 
-        return view('admin-views.order.order-view', compact('order'));
+        if (isset($order)) {
+            return view('admin-views.order.order-view', compact('order'));
+        } else {
+            Toastr::info(translate('No more orders!'));
+            return back();
+        }
     }
 
     public function search(Request $request)
@@ -104,18 +101,10 @@ class OrderController extends Controller
             Toastr::warning(translate('Please assign delivery man first!'));
             return back();
         }
-        if($request->order_status == 'completed' && $order->payment_status != 'paid') {
-            Toastr::warning(translate('Please update payment status first!'));
-            return back();
-        }
         $order->order_status = $request->order_status;
         $order->save();
 
-        $fcm_token = null;
-        if(isset($order->customer)) {
-            $fcm_token = $order->customer->cm_firebase_token;
-        }
-
+        $fcm_token = $order->customer->cm_firebase_token;
         $value = Helpers::order_status_update_message($request->order_status);
         try {
             if ($value) {
@@ -126,10 +115,7 @@ class OrderController extends Controller
                     'image' => '',
                     'type'=>'order_status',
                 ];
-                if(isset($fcm_token)) {
-                    Helpers::send_push_notif_to_device($fcm_token, $data);
-                }
-
+                Helpers::send_push_notif_to_device($fcm_token, $data);
             }
         } catch (\Exception $e) {
             Toastr::warning(translate('Push notification send failed for Customer!'));
@@ -151,66 +137,6 @@ class OrderController extends Controller
                 }
             } catch (\Exception $e) {
                 Toastr::warning(translate('Push notification failed for DeliveryMan!'));
-            }
-        }
-
-        //kitchen order notification
-        if($request->order_status == 'confirmed') {
-            $data = [
-                'title' => translate('You have a new order - (Order Confirmed).'),
-                'description' => $order->id,
-                'order_id' => $order->id,
-                'image' => '',
-            ];
-
-            try {
-                Helpers::send_push_notif_to_topic($data, "kitchen-{$order->branch_id}",'general');
-
-            } catch (\Exception $e) {
-                Toastr::warning(translate('Push notification failed!'));
-            }
-        }
-        $table_order = TableOrder::where(['id' => $order->table_order_id])->first();
-
-        if($request->order_status == 'completed' && $order->payment_status == 'paid') {
-
-            if (isset($table_order->id)){
-                //dd($table_order);
-                $orders = Order::where(['table_order_id' => $table_order->id])->get();
-                $status = 1;
-                foreach ($orders as $order){
-                    if($order->order_status != 'completed'){
-                        $status=0;
-                        break;
-                    }
-                }
-
-                if ($status == 1){
-                    $table_order->branch_table_token_is_expired = 1;
-                    //dd($table_order);
-                    $table_order->save();
-                }
-            }
-        }
-
-        if($request->order_status == 'canceled') {
-
-            if (isset($table_order->id)){
-                //dd($table_order);
-                $orders = Order::where(['table_order_id' => $table_order->id])->get();
-                $status = 1;
-                foreach ($orders as $order){
-                    if($order->order_status != 'canceled'){
-                        $status=0;
-                        break;
-                    }
-                }
-
-                if ($status == 1){
-                    $table_order->branch_table_token_is_expired = 1;
-                    //dd($table_order);
-                    $table_order->save();
-                }
             }
         }
 
@@ -294,10 +220,7 @@ class OrderController extends Controller
         $order->save();
 
         $fcm_token = $order->delivery_man->fcm_token;
-        $customer_fcm_token = null;
-        if(isset($order->customer)) {
-            $customer_fcm_token = $order->customer->cm_firebase_token;
-        }
+        $customer_fcm_token = $order->customer->cm_firebase_token;
         $value = Helpers::order_status_update_message('del_assign');
         try {
             if ($value) {
@@ -309,12 +232,8 @@ class OrderController extends Controller
                     'type'=>'order_status',
                 ];
                 Helpers::send_push_notif_to_device($fcm_token, $data);
-                if(isset($order->customer)) {
-                    $data['description'] = Helpers::order_status_update_message('customer_notify_message');
-                }
-                if(isset($customer_fcm_token)) {
-                    Helpers::send_push_notif_to_device($customer_fcm_token, $data);
-                }
+                $data['description'] = Helpers::order_status_update_message('customer_notify_message');
+                Helpers::send_push_notif_to_device($customer_fcm_token, $data);
             }
         } catch (\Exception $e) {
             Toastr::warning(translate('Push notification failed for DeliveryMan!'));
@@ -326,7 +245,7 @@ class OrderController extends Controller
     public function payment_status(Request $request)
     {
         $order = Order::find($request->id);
-        if ($request->payment_status == 'paid' && $order['transaction_reference'] == null && $order['payment_method'] != 'cash_on_delivery' && $order['order_type'] != 'dine_in') {
+        if ($request->payment_status == 'paid' && $order['transaction_reference'] == null && $order['payment_method'] != 'cash_on_delivery') {
             Toastr::warning(translate('Add your payment reference code first!'));
             return back();
         }
@@ -357,7 +276,7 @@ class OrderController extends Controller
         ];
 
         DB::table('customer_addresses')->where('id', $id)->update($address);
-        Toastr::success(translate('Address updated!'));
+        Toastr::success(translate('Payment status updated!'));
         return back();
     }
 

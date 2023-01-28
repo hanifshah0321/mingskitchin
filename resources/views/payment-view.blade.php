@@ -58,7 +58,7 @@
             </center>
         </div>
         <section class="col-lg-12">
-            <div class="mt-3">
+            <div class="checkout_details mt-3">
                 <div class="row">
                     @php($order_amount = session('order_amount'))
                     @php($customer = \App\User::find(session('customer_id')))
@@ -363,7 +363,7 @@
                                             <form action="{!! route('internal-point-pay',['order_amount'=>$order_amount,'customer_id'=>$customer['id'],'callback'=>$callback]) !!}" method="POST">
                                                 @csrf
                                                 <input name="order_id" value="" style="display: none">
-                                                <button type="submit" class="btn btn-primary click-if-alone">{{ translate('Proceed') }}</button>
+                                                <button type="submit" class="btn btn-primary">{{ translate('Proceed') }}</button>
                                             </form>
                                         @else
                                             <button type="button" class="btn btn-primary">{{ translate('Sorry! Next time.') }}</button>
@@ -642,9 +642,10 @@
 
 <script>
     function click_if_alone() {
-        let total = $('.click-if-alone').length;
+        let total = $('.checkout_details .click-if-alone').length;
         if (Number.parseInt(total) < 2) {
-            $('.click-if-alone').click();
+            $('.click-if-alone').click()
+            $('.checkout_details').html('<div class="text-center"><h1>{{translate('Redirecting_to_the_payment_page')}}......</h1></div>');
         }
     }
     @if(!$errors->any())

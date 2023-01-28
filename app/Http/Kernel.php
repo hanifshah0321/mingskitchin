@@ -4,7 +4,6 @@ namespace App\Http;
 
 use App\Http\Middleware\ActivationCheckMiddleware;
 use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\AppActivation;
 use App\Http\Middleware\BranchMiddleware;
 use App\Http\Middleware\InstallationMiddleware;
 use App\Http\Middleware\ModulePermissionMiddleware;
@@ -75,6 +74,5 @@ class Kernel extends HttpKernel
         'actch' => ActivationCheckMiddleware::class,
         'localization' => \App\Http\Middleware\localization::class,
         'module' => ModulePermissionMiddleware::class,
-        'app_activate'=>AppActivation::class
     ];
 }

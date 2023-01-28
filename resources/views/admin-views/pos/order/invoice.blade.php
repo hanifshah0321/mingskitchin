@@ -1,4 +1,4 @@
-<div style="width:370px;margin-left:18px" id="printableAreaContent">
+<div style="width:410px; overflow-x: scroll;">
     <div class="text-center pt-4 mb-3 w-100">
         <h2 style="line-height: 1">{{\App\Model\BusinessSetting::where(['key'=>'restaurant_name'])->first()->value}}</h2>
         <h5 style="font-size: 20px;font-weight: lighter;line-height: 1">
@@ -10,7 +10,7 @@
         </h5>
     </div>
 
-    <span>--------------------------------------------</span>
+    <span>--------------------------------------------------------------------------------------</span>
     <div class="row mt-3">
         <div class="col-6">
             <h5>{{translate('Order ID')}} : {{$order['id']}}</h5>
@@ -32,13 +32,13 @@
         @endif
     </div>
     <h5 class="text-uppercase"></h5>
-    <span>--------------------------------------------</span>
+    <span>--------------------------------------------------------------------------------------</span>
     <table class="table table-bordered mt-3" style="width: 98%">
         <thead>
         <tr>
             <th style="width: 10%">{{translate('QTY')}}</th>
             <th class="">{{translate('DESC')}}</th>
-            <th style="text-align:right; padding-right:4px">{{translate('Price')}}</th>
+            <th class="">{{translate('Price')}}</th>
         </tr>
         </thead>
 
@@ -88,7 +88,7 @@
 
                         {{translate('Discount')}} : {{ \App\CentralLogics\Helpers::set_symbol($detail['discount_on_product']*$detail['quantity']) }}
                     </td>
-                    <td style="width: 28%;padding-right:4px; text-align:right">
+                    <td style="width: 28%">
                         @php($amount=($detail['price']-$detail['discount_on_product'])*$detail['quantity'])
                         {{ \App\CentralLogics\Helpers::set_symbol($amount) }}
                     </td>
@@ -99,7 +99,7 @@
         @endforeach
         </tbody>
     </table>
-    <span>--------------------------------------------</span>
+    <span>---------------------------------------------------------------------------------------</span>
     <div class="row justify-content-md-end">
         <div class="col-md-7 col-lg-7">
             <dl class="row text-right" style="color: black!important;">
@@ -133,16 +133,16 @@
 {{--                </dd>--}}
                 <dt class="col-6" style="font-size: 20px">{{translate('Total')}}:</dt>
 {{--                <dd class="col-6" style="font-size: 20px">{{$sub_total+$del_c+$total_tax+$add_ons_cost-$order['coupon_discount_amount']." ".\App\CentralLogics\Helpers::currency_symbol()}}</dd>--}}
-                <dd class="col-6" style="font-size: 20px">{{ \App\CentralLogics\Helpers::set_symbol($order->order_amount-$order['extra_discount']) }}</dd>
+                <dd class="col-6" style="font-size: 20px">{{ \App\CentralLogics\Helpers::set_symbol($order->order_amount) }}</dd>
             </dl>
         </div>
     </div>
     <div class="d-flex flex-row justify-content-between border-top">
         <span>{{translate('Paid_by')}}: {{$order->payment_method}}</span>
     </div>
-    <span>--------------------------------------------</span>
+    <span>---------------------------------------------------------------------------------------</span>
     <h5 class="text-center pt-3">
         """{{translate('THANK YOU')}}"""
     </h5>
-    <span>--------------------------------------------</span>
+    <span>---------------------------------------------------------------------------------------</span>
 </div>

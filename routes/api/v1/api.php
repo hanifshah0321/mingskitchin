@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function () {
+Route::group(['namespace' => 'Api\V1', 'middleware'=>'localization'], function () {
 
     Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
         Route::post('registration', 'CustomerAuthController@registration');
@@ -21,14 +21,11 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
         Route::group(['prefix' => 'delivery-man'], function () {
             Route::post('login', 'DeliveryManLoginController@login');
         });
-
-        Route::group(['prefix' => 'kitchen', 'middleware' => 'app_activate:' . APPS['kitchen_app']['software_id']], function () {
-            Route::post('login', 'KitchenLoginController@login');
-            Route::post('logout', 'KitchenLoginController@logout')->middleware('auth:kitchen_api');
-        });
     });
 
+    Route::get('booktable', 'BooktableController@booktable');
     Route::group(['prefix' => 'delivery-man'], function () {
+        
         Route::get('profile', 'DeliverymanController@get_profile');
         Route::get('current-orders', 'DeliverymanController@get_current_orders');
         Route::get('all-orders', 'DeliverymanController@get_all_orders');
@@ -55,7 +52,6 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
 
     Route::group(['prefix' => 'config'], function () {
         Route::get('/', 'ConfigController@configuration');
-        Route::get('table', 'TableConfigController@configuration');
     });
 
     Route::group(['prefix' => 'products'], function () {
@@ -90,10 +86,6 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
         Route::put('update-profile', 'CustomerController@update_profile');
         Route::put('cm-firebase-token', 'CustomerController@update_cm_firebase_token');
         Route::get('transaction-history', 'CustomerController@get_transaction_history');
-
-        Route::namespace('Auth')->group(function () {
-            Route::delete('remove-account', 'CustomerAuthController@remove_account');
-        });
 
         Route::group(['prefix' => 'address'], function () {
             Route::get('list', 'CustomerController@address_list');
@@ -146,24 +138,11 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
 
     Route::post('subscribe-newsletter', 'CustomerController@subscribe_newsletter');
 
-    Route::get('pages', 'PageController@index');
+    Route::any('buyplan', 'OrderController@buyplan');
 
-    Route::group(['prefix' => 'table', 'middleware' => 'app_activate:' . APPS['table_app']['software_id']], function () {
-        Route::get('list', 'TableController@list');
-        Route::get('product/type', 'TableController@filter_by_product_type');
-        Route::get('promotional/page', 'TableController@get_promotional_page');
-        Route::post('order/place', 'TableController@place_order');
-        Route::get('order/details', 'TableController@get_order_details');
-        Route::get('order/list', 'TableController@table_order_list');
-    });
-
-    Route::group(['prefix' => 'kitchen', 'middleware' => 'auth:kitchen_api', 'app_activate:' . APPS['kitchen_app']['software_id']], function () {
-        Route::get('profile', 'KitchenController@get_profile');
-        Route::get('order/list', 'KitchenController@get_order_list');
-        Route::get('order/search', 'KitchenController@search');
-        Route::get('order/filter', 'KitchenController@filter_by_status');
-        Route::get('order/details', 'KitchenController@get_order_details');
-        Route::put('order/status', 'KitchenController@change_status');
-        Route::put('update-fcm-token', 'KitchenController@update_fcm_token');
-    });
+    Route::get('membershipplan', 'ProductController@allmembershipplan');
+    
+      Route::post('checkmembership', 'OrderController@checkmembership');
+      
+      Route::get('loginuserid', 'OrderController@loginuserid');
 });

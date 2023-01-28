@@ -60,7 +60,7 @@
                             <li class="d-flex align-items-center font-size-sm">
                                 @php($five=\App\CentralLogics\Helpers::rating_count($product['id'],5))
                                 <span
-                                    class="mr-3">{{translate('5 star')}}</span>
+                                    class="mr-3">5 star</span>
                                 <div class="progress flex-grow-1">
                                     <div class="progress-bar" role="progressbar"
                                          style="width: {{$total==0?0:($five/$total)*100}}%;"
@@ -74,7 +74,7 @@
                             <!-- Review Ratings -->
                             <li class="d-flex align-items-center font-size-sm">
                                 @php($four=\App\CentralLogics\Helpers::rating_count($product['id'],4))
-                                <span class="mr-3">{{translate('4 star')}}</span>
+                                <span class="mr-3">4 star</span>
                                 <div class="progress flex-grow-1">
                                     <div class="progress-bar" role="progressbar"
                                          style="width: {{$total==0?0:($four/$total)*100}}%;"
@@ -88,7 +88,7 @@
                             <!-- Review Ratings -->
                             <li class="d-flex align-items-center font-size-sm">
                                 @php($three=\App\CentralLogics\Helpers::rating_count($product['id'],3))
-                                <span class="mr-3">{{translate('3 star')}}</span>
+                                <span class="mr-3">3 star</span>
                                 <div class="progress flex-grow-1">
                                     <div class="progress-bar" role="progressbar"
                                          style="width: {{$total==0?0:($three/$total)*100}}%;"
@@ -102,7 +102,7 @@
                             <!-- Review Ratings -->
                             <li class="d-flex align-items-center font-size-sm">
                                 @php($two=\App\CentralLogics\Helpers::rating_count($product['id'],2))
-                                <span class="mr-3">{{translate('2 star')}}</span>
+                                <span class="mr-3">2 star</span>
                                 <div class="progress flex-grow-1">
                                     <div class="progress-bar" role="progressbar"
                                          style="width: {{$total==0?0:($two/$total)*100}}%;"
@@ -116,7 +116,7 @@
                             <!-- Review Ratings -->
                             <li class="d-flex align-items-center font-size-sm">
                                 @php($one=\App\CentralLogics\Helpers::rating_count($product['id'],1))
-                                <span class="mr-3">{{translate('1 star')}}</span>
+                                <span class="mr-3">1 star</span>
                                 <div class="progress flex-grow-1">
                                     <div class="progress-bar" role="progressbar"
                                          style="width: {{$total==0?0:($one/$total)*100}}%;"
@@ -155,7 +155,7 @@
                               {{$variation['type']}} : {{ \App\CentralLogics\Helpers::set_symbol($variation['price']) }}
                             </span><br>
                         @endforeach
-                        <h4 class="border-bottom mt-2"> {{translate('Addons')}} </h4>
+                        <h4 class="border-bottom mt-2"> Addons </h4>
                         @foreach(\App\Model\AddOn::whereIn('id',json_decode($product['add_ons'],true))->get() as $addon)
                             <span class="text-capitalize">
                               {{$addon['name']}} : {{ \App\CentralLogics\Helpers::set_symbol($addon['price']) }}
@@ -212,25 +212,14 @@
                                     <div class="avatar avatar-circle">
                                         <img class="avatar-img" width="75" height="75"
                                              onerror="this.src='{{asset('public/assets/admin/img/160x160/img1.jpg')}}'"
-                                             @if(isset($review->customer))
-                                             src="{{asset('storage/app/public/profile/'.$review->customer->image??'')}}"
-                                             @else
-                                             src="{{asset('storage/app/public/profile/')}}"
-                                             @endif
+                                             src="{{asset('storage/app/public/profile/'.$review->customer->image)}}"
                                              alt="Image Description">
                                     </div>
                                     <div class="ml-3">
-                                    <span class="d-block h5 text-hover-primary mb-0">
-                                        @if(isset($review->customer))
-                                        {{$review->customer['f_name']." ".$review->customer['l_name']}}
-                                        <i class="tio-verified text-primary" data-toggle="tooltip" data-placement="top"
+                                    <span class="d-block h5 text-hover-primary mb-0">{{$review->customer['f_name']." ".$review->customer['l_name']}} <i
+                                            class="tio-verified text-primary" data-toggle="tooltip" data-placement="top"
                                             title="Verified Customer"></i></span>
                                         <span class="d-block font-size-sm text-body">{{$review->customer->email}}</span>
-                                        @else
-                                            <span class="badge-pill badge-soft-dark text-muted text-sm small">
-                                                {{translate('Customer unavailable')}}
-                                            </span>
-                                        @endif
                                     </div>
                                 </a>
                             </td>

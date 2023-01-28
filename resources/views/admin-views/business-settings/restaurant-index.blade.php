@@ -699,7 +699,7 @@
                             @php($decimal_point_settings=\App\CentralLogics\Helpers::get_business_settings('decimal_point_settings'))
                             <div class="col-md-3 col-12">
                                 <div class="form-group">
-                                    <label class="input-label text-capitalize">{{translate('digit after decimal point ')}}({{translate(' ex: 0.00')}})</label>
+                                    <label class="input-label text-capitalize">{{translate('digit_after_decimal_point ')}}({{translate(' ex: 0.00')}})</label>
                                     <input type="number" value="{{$decimal_point_settings}}"
                                            name="decimal_point_settings" class="form-control" placeholder=""
                                            required>
@@ -1032,8 +1032,8 @@
                 showCancelButton: true,
                 cancelButtonColor: 'default',
                 confirmButtonColor: '#377dff',
-                cancelButtonText: '{{translate('No')}}',
-                confirmButtonText:'{{translate('Yes')}}',
+                cancelButtonText: 'No',
+                confirmButtonText: 'Yes',
                 reverseButtons: true
             }).then((result) => {
                 if (result.value) {

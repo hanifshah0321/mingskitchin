@@ -9,10 +9,10 @@
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
-        <div class="pb-3">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-sm mb-2 mb-sm-0">
-                    <h1 class=""><i class="tio-edit"></i> {{translate('Update Banner')}}</h1>
+                    <h1 class="page-header-title"><i class="tio-edit"></i> {{translate('Update Banner')}}</h1>
                 </div>
             </div>
         </div>
